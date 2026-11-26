@@ -98,7 +98,9 @@ function AccountCapturePage({ state, tab, busy, act }) {
     <Card icon={ArrowDownToLine} className="checklist-card" title="版本更新" help="下载通过签名验证的独立采集工具更新。">
       <p>{state.captureUpdate?.error || state.captureUpdate?.hint || '可手动检查；启动时检查由你选择开启。'}</p>
       <div className="values"><Value label="当前版本">{state.version}</Value><Value label="可用版本">{state.captureUpdate?.availableVersion || '尚未检查'}</Value>
-        <Value label="更新状态">{({ idle: '未检查', checking: '检查中', unavailable: '暂无公开版本', current: '已是最新', available: '有新版本', downloading: `下载 ${state.captureUpdate?.progress || 0}%`, verifying: '验证包内容', ready: '可启动新版', restarting: '启动新版', failed: '需要重试' })[state.captureUpdate?.phase] || '未检查'}</Value></div>
+        <Value label="更新状态">{({ idle: '未检查', checking: '检查中', unavailable: '暂无公开版本', current: '已是最新', available: '有新版本', downloading: `下载 ${state.captureUpdate?.progress || 0}%`, verifying: '验证包内容', ready: '可启动新版', restarting: '启动新版', failed: '需要重试' })[state.captureUpdate?.phase] || '未检查'}</Value>
+        <Value label="更新线路">{state.captureUpdate?.sourceLabel || '自动选择'}</Value></div>
+      <p className="capture-hint">优先直连 GitHub，连接失败或下载中断时自动尝试备用加速（GH-Proxy）。两条线路使用同一签名和文件校验。</p>
       <div className="actions">{action('capture-update-check', '检查更新', RefreshCw, undefined, locked)}
         {action('capture-update-download', '下载并验证', ArrowDownToLine, undefined, locked || state.captureUpdate?.phase !== 'available')}
         {action('capture-update-start', '启动新版本', Play, undefined, locked || state.captureUpdate?.phase !== 'ready')}

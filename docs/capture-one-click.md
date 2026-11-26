@@ -47,6 +47,10 @@ Preflight checks cover recording permissions, component availability, protocol r
 
 Use the settings page to check for updates. Checking at startup is optional. Downloads are accepted only from the configured repository and must pass signature, digest, product, and archive checks.
 
+Update checks and package downloads try GitHub directly first. If the connection fails, stalls, or returns invalid content, the tool tries the built-in GH-Proxy route. The settings page shows the active route. A route that successfully fetched the signed descriptor is preferred for the package download.
+
+Connection waits are limited to 12 seconds, stalled transfers to 20 seconds, and each package attempt to 10 minutes. Switching routes restarts the transfer and verifies its full size and digest. No GitHub token, account archive, or game traffic is sent to the proxy. Both routes require the same release signature.
+
 The verified version is installed in a separate directory. Starting it closes the current window first. Keep the previous directory if rollback is needed. Capture and analysis must finish before updating.
 
 A private repository or an unpublished release may have no anonymously accessible update. The application does not request or embed a GitHub account token.

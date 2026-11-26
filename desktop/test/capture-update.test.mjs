@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { generateKeyPairSync, sign, createHash } from 'node:crypto'
-import { mkdtemp, writeFile, readFile, mkdir, rm } from 'node:fs/promises'
+import { mkdtemp, writeFile, readFile, mkdir, readdir, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { signedRelease, newer, releaseURL, CaptureUpdater } from '../capture-update.mjs'
@@ -92,4 +92,180 @@ test('download tampering and untrusted redirects never reach the installer', asy
   const redirected = new CaptureUpdater({ here: root, userData: root }, { fetcher: async () => new Response('', {
     status: 302, headers: { location: 'https://untrusted.example/payload' } }) })
   await assert.rejects(redirected.check(), /重定向地址/)
+}))
+
+function installing(root) {
+  let count = 0
+  const context = { here: root, userData: root, python: () => 'python', command: (_exe, args) => ({ done: (async () => {
+    assert.deepEqual(await readFile(args[args.indexOf('--input') + 1]), data)
+    count++
+    const target = args[args.indexOf('--output') + 1]
+    await mkdir(target)
+    return JSON.stringify({ path: target, executable: join(target, '账号采集工具.exe'), version: release.version })
+  })() }) }
+  return { context, count: () => count }
+}
+const isMirror = url => url.hostname === 'gh-proxy.com'
+const isFeed = url => url.pathname.endsWith('/capture-update.json')
+
+test('a blocked update feed falls back without credentials and prefers that route for the package', async () => fixture(async root => {
+  const install = installing(root), calls = []
+  const updater = new CaptureUpdater(install.context, { fetcher: async (url, options) => {
+    calls.push(url.href)
+    assert.equal(options.credentials, 'omit')
+    assert.ok(!Object.keys(options.headers).some(key => /authorization|cookie/i.test(key)))
+    if (!isMirror(url)) throw Error('Direct connection blocked')
+    assert.ok(url.href.startsWith('https://gh-proxy.com/https://github.com/example/archive/releases/'))
+    return new Response(isFeed(url) ? JSON.stringify(envelope()) : data)
+  } })
+  await updater.check(); await updater.prepare()
+  assert.equal(updater.state.phase, 'ready')
+  assert.equal(updater.state.source, 'gh-proxy')
+  assert.equal(calls.length, 3)
+  assert.equal(install.count(), 1)
+}))
+
+test('a timed-out connection switches to the backup feed', { timeout: 3000 }, async () => fixture(async root => {
+  let calls = 0
+  const updater = new CaptureUpdater({ here: root, userData: root }, { timeouts: { connectMs: 20 }, fetcher: async (url, options) => {
+    calls++
+    if (isMirror(url)) return new Response(JSON.stringify(envelope()))
+    return new Promise((_ok, fail) => options.signal.addEventListener('abort', () => fail(Error('connection timeout')), { once: true }))
+  } })
+  await updater.check()
+  assert.equal(calls, 2)
+  assert.equal(updater.state.phase, 'available')
+  assert.equal(updater.state.source, 'gh-proxy')
+}))
+
+test('a 404 direct feed still permits a valid signed backup feed', async () => fixture(async root => {
+  const updater = new CaptureUpdater({ here: root, userData: root }, { fetcher: async url =>
+    isMirror(url) ? new Response(JSON.stringify(envelope())) : new Response('', { status:404 }) })
+  assert.equal(await updater.check(), true)
+  assert.equal(updater.state.source, 'gh-proxy')
+}))
+
+test('backup follows wrapped GitHub CDN redirects while retaining signature verification', async () => fixture(async root => {
+  const calls = []
+  const redirected = 'https://gh-proxy.com/https://release-assets.githubusercontent.com/github-production-release-asset/1/descriptor?sig=public-download-signature'
+  const updater = new CaptureUpdater({ here:root, userData:root }, { fetcher:async url => {
+    calls.push(url.href)
+    if (!isMirror(url)) throw Error('Direct blocked')
+    if (isFeed(url)) return new Response('', {status:302,headers:{location:redirected}})
+    assert.equal(url.href, redirected)
+    return new Response(JSON.stringify(envelope()))
+  } })
+  assert.equal(await updater.check(), true)
+  assert.equal(calls.length, 3)
+  assert.equal(updater.state.source, 'gh-proxy')
+}))
+
+test('invalid direct metadata can recover through a separately verified descriptor', async () => fixture(async root => {
+  const updater = new CaptureUpdater({ here: root, userData: root }, { fetcher: async url =>
+    new Response(isMirror(url) ? JSON.stringify(envelope()) : '<html>Connection error</html>') })
+  assert.equal(await updater.check(), true)
+  assert.equal(updater.release.sha256, release.sha256)
+}))
+
+test('an interrupted package restarts from zero rather than mixing bytes from both routes', async () => fixture(async root => {
+  const install = installing(root), progress = []
+  let updater
+  updater = new CaptureUpdater({ ...install.context, send: () => progress.push([updater.state.source, updater.state.progress]) }, {
+    fetcher: async url => {
+      if (isFeed(url)) return new Response(JSON.stringify(envelope()))
+      if (isMirror(url)) return new Response(data)
+      return new Response(new ReadableStream({ start(controller) {
+        controller.enqueue(data.subarray(0, 8))
+        setTimeout(() => controller.error(Error('Disconnected mid-transfer')), 20)
+      } }))
+    }
+  })
+  await updater.check(); await updater.prepare()
+  assert.ok(progress.some(([source, percent]) => source === 'github' && percent > 0 && percent < 100))
+  assert.ok(progress.some(([source, percent]) => source === 'gh-proxy' && percent === 0))
+  assert.equal(install.count(), 1)
+  assert.equal(updater.state.source, 'gh-proxy')
+  assert.ok(!(await readdir(join(root, 'updates'))).some(name => /\.zip(?:\.part)?$/.test(name)))
+}))
+
+test('a stalled transfer has its own deadline and can recover on the backup route', { timeout:3000 }, async () => fixture(async root => {
+  const install = installing(root)
+  const updater = new CaptureUpdater(install.context, { timeouts: { idleMs:20 }, fetcher: async (url, options) => {
+    if (isFeed(url)) return new Response(JSON.stringify(envelope()))
+    if (isMirror(url)) return new Response(data)
+    return new Response(new ReadableStream({ start(controller) {
+      controller.enqueue(data.subarray(0, 8))
+      options.signal.addEventListener('abort', () => controller.error(Error('idle timeout')), { once:true })
+    } }))
+  } })
+  await updater.check(); await updater.prepare()
+  assert.equal(install.count(), 1)
+  assert.equal(updater.state.source, 'gh-proxy')
+}))
+
+test('same-size package tampering on one route never reaches installation before a correct retry', async () => fixture(async root => {
+  const install = installing(root)
+  const updater = new CaptureUpdater(install.context, { fetcher: async url => {
+    if (isFeed(url)) return new Response(JSON.stringify(envelope()))
+    return new Response(isMirror(url) ? data : Buffer.alloc(data.length))
+  } })
+  await updater.check(); await updater.prepare()
+  assert.equal(install.count(), 1)
+  assert.equal(updater.state.source, 'gh-proxy')
+}))
+
+test('unexpected partial content and oversized responses switch routes before installation', async () => fixture(async root => {
+  for (const response of [() => new Response(data.subarray(0,4), { status:206 }),
+    () => new Response(data, { headers: { 'content-length':String(data.length + 1) } })]) {
+    const install = installing(root)
+    const updater = new CaptureUpdater(install.context, { fetcher: async url => {
+      if (isFeed(url)) return new Response(JSON.stringify(envelope()))
+      return isMirror(url) ? new Response(data) : response()
+    } })
+    await updater.check(); await updater.prepare()
+    assert.equal(install.count(), 1)
+    assert.equal(updater.state.source, 'gh-proxy')
+  }
+}))
+
+test('the backup cannot supply an unsigned update or redirect to a different proxy target', async () => fixture(async root => {
+  for (const response of [() => new Response(JSON.stringify({ ...envelope(), signature:'invalid' })),
+    () => new Response(JSON.stringify(envelope({ ...release, repository:'other/repository' }))),
+    () => new Response('', { status:302, headers:{ location:'https://gh-proxy.com/https://evil.example/update.json' } }),
+    () => new Response('', { status:302, headers:{ location:'https://gh-proxy.com/https://github.com/other/repository/releases/latest/download/capture-update.json' } })]) {
+    const calls = []
+    const updater = new CaptureUpdater({ here:root, userData:root }, { fetcher: async url => {
+      calls.push(url.href)
+      return isMirror(url) ? response() : new Response('', { status:503 })
+    } })
+    await assert.rejects(updater.check(), /签名|重定向地址|格式/)
+    assert.equal(updater.release, null)
+    assert.equal(calls.length, 2)
+    assert.equal(updater.state.phase, 'failed')
+  }
+}))
+
+test('cancelling a backup download prevents another route and removes partial bytes', async () => fixture(async root => {
+  let started, downloads = 0
+  const ready = new Promise(resolve => { started = resolve })
+  const install = installing(root)
+  const updater = new CaptureUpdater(install.context, { fetcher: async (url, options) => {
+    if (isFeed(url)) {
+      if (!isMirror(url)) throw Error('Direct blocked')
+      return new Response(JSON.stringify(envelope()))
+    }
+    downloads++
+    return new Response(new ReadableStream({ start(controller) {
+      controller.enqueue(data.subarray(0,8))
+      options.signal.addEventListener('abort', () => controller.error(Error('aborted')), { once:true })
+      started()
+    } }))
+  } })
+  await updater.check()
+  const task = updater.prepare()
+  await ready; updater.cancel()
+  await assert.rejects(task, /aborted/)
+  assert.equal(downloads, 1)
+  assert.equal(install.count(), 0)
+  assert.deepEqual(await readdir(join(root,'updates')), [])
 }))

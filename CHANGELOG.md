@@ -1,3 +1,9 @@
+# 0.7.1
+
+- Retry update checks and package downloads through GH-Proxy when the direct connection fails.
+- Bound connection and stalled-download waits; restart interrupted downloads with independent digest checks.
+- Display the active update route and retain the same signature, repository, product, and archive validation.
+
 # 0.7.0
 
 - Record the request profession and social-list category with original PacketId and connection context.
