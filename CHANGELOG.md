@@ -1,3 +1,10 @@
+# 0.7.0
+
+- Record the request profession and social-list category with original PacketId and connection context.
+- Pair only unique requests and responses. Missing, failed, duplicate, and incomplete exchanges stay unknown.
+- Separate six-category life base coverage, pictorial-history coverage, and classified social-list coverage in the live and final reports.
+- Preserve all snapshots and original evidence, with bounded display summaries and additional browsing instructions.
+
 # archive-desk v0.6.0
 
 Portable Windows x64 release.

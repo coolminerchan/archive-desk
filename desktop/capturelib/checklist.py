@@ -42,8 +42,8 @@ GROUPS = [
     ('map_boxes','场景宝箱观测',['@map_boxes'],'进入对应地区并等待宝箱状态返回；只确认已观测宝箱'),
     ('dungeons','小副本进度摘要',['@dungeons'],'进入各已解锁地区，等待场景中的副本进度返回；总数未知，不表示全部采齐'),
     ('dungeon_details','小副本独立详情',['@dungeon_details'],'按需打开各副本详情；需保留副本内宝箱时进入副本等待加载，无需重打或领取奖励'),
-    ('friend','好友列表',['FriendRsp','FriendListRsp'],'打开好友界面'),
-    ('archive','档案与生活技能',['GetArchiveInfoRsp','GetLifeInfoRsp'],'打开档案、生活技能界面'),
+    ('friend','社交原始资料',['FriendRsp','FriendListRsp'],'打开社交界面；列表分类另见带分类的社交列表'),
+    ('archive','档案资料',['GetArchiveInfoRsp'],'打开档案界面'),
 ]
 RELEVANT = {n for _,_,targets,_ in GROUPS for n in targets if not n.startswith('@')} | {'PackNotice','GetAllCharacterEquipRsp','SceneDataNotice', 'DungeonViewRsp', 'DungeonEnterRsp', 'DungeonRepeatEnterRsp', 'DungeonFinishRsp', 'DungeonOpenFinalBoxNotice'}
 STATES = {'collected':'已采集','partial':'未见装备列表','empty':'已收到（列表为空）','waiting':'尚未采集','missing':'未采集到','unknown':'暂时无法判断'}
@@ -167,25 +167,33 @@ def scan_pcap(decoder,path,stop=None,details=None):
     from exploration import Exploration, PACKETS
     from account_identity import AccountIdentityIndex
     from dungeons import Dungeons, PACKETS as DUNGEON_PACKETS
+    from packet_context import PacketContexts, CODES as CONTEXT_CODES, REQUESTS
+    from life_social import LifeSocial, quality_items
     identities=AccountIdentityIndex();players={}
     garden_layouts={};garden_names={};garden_owners=set()
     dungeons=Dungeons(decoder.net_pb2)
+    contexts=PacketContexts();supplemental=LifeSocial(decoder.net_pb2);context_packets=[]
     exploration=Exploration(decoder.net_pb2);uids=set()
     path=decoder.prepare_capture(Path(path))
     streams=decoder.list_tcp_streams(path)
     if len(streams)>64:raise ValueError('Live stream budget exceeded; final analysis required')
     for sid in streams:
         if stop is not None and stop.is_file():break
-        node0,node1,b01,b10=decoder.extract_tcp_stream_directions(path,sid)
+        node0,node1,b01,b10,gaps=decoder._follow_tcp_stream(path,sid)
         port0=node0.rsplit(':',1)[-1];port1=node1.rsplit(':',1)[-1]
-        if port1 in decoder.GAME_PORTS:directions=[('s2c',b10)]
-        elif port0 in decoder.GAME_PORTS:directions=[('s2c',b01)]
+        if port1 in decoder.GAME_PORTS:directions=[('c2s',b01),('s2c',b10)]
+        elif port0 in decoder.GAME_PORTS:directions=[('s2c',b01),('c2s',b10)]
         else:directions=decoder.pick_directions(b01,b10)
         for label,data in directions:
-            if label=='c2s':continue
-            packets,_=decoder.parse_game_stream(data)
-            for packet in packets:
+            packets,remaining=decoder.parse_game_stream(data)
+            if remaining or gaps:contexts.mark_incomplete(sid)
+            for number,packet in enumerate(packets):
                 name=cmd_map.get(packet['msg_id'],'')
+                if name in CONTEXT_CODES and label == ('c2s' if name in REQUESTS else 's2c'):
+                    stem=f'{number+1:05}_s{sid}_{label}_{packet["msg_id"]}_{name}'
+                    contexts.add(decoder.net_pb2,name,packet['body'],packet,sid,label,stem,incomplete=bool(gaps))
+                    context_packets.append((name,packet['body'],'raw/'+stem+'.bin'))
+                if label=='c2s':continue
                 if name not in RELEVANT | {'OtherPlayerInfoRsp'} or packet.get('decompress_err'):continue
                 body,error=decoder.decode_proto_body(name,packet['body'])
                 if not error:
@@ -203,6 +211,8 @@ def scan_pcap(decoder,path,stop=None,details=None):
                             owner=decoder.collect_garden_scene(scene,garden_layouts,garden_names)
                             if owner: garden_owners.add(owner)
                     except (ValueError,TypeError):continue
+    for name,raw,source in context_packets:
+        supplemental.add(name,raw,source,contexts.match(source,name,raw))
     if details is not None:
         summary=exploration.summary(sorted(uids),identities.records());summary.pop('evidence',None)
         for row in summary['maps'].values():
@@ -211,6 +221,8 @@ def scan_pcap(decoder,path,stop=None,details=None):
         details['accounts_detail']=[dict(players.get(row['player_id'],{}),**row) for row in identities.records()]
         details['accounts']=sum(max(1,len(row['observed_player_labels'])) for row in identities.records())
         details['dungeons']=dungeons.summary(identities,compact=True)
+        details['life_social']=supplemental.summary(identities,compact=True)
+        details['supplemental_items']=quality_items(details['life_social'])
         single=identities.single()
         own=single['player_id'] if single else None
         details['garden_account_identified']=own is not None
@@ -325,6 +337,7 @@ def watch(capture_root):
             break
         result=report(counts, empty, phase='capturing', readable=readable, warning=notice, live_packets=live_packets)
         result.update(details)
+        result['items'].extend(result.pop('supplemental_items', []))
         result['first_response_observed_ms'] = first_response_ms
         atomic_json(target, result)
         waited = 0.0

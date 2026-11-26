@@ -21,9 +21,9 @@ proto = parser.net_pb2
 codes = {name: code for code, name in parser.load_cmd_map().items()}
 
 
-def frame(name, message):
+def frame(name, message, *, packet_id=0, seq_id=0):
     body = message.SerializeToString()
-    head = proto.PacketHead(msg_id=codes[name], body_len=len(body)).SerializeToString()
+    head = proto.PacketHead(msg_id=codes[name], body_len=len(body), packet_id=packet_id, seq_id=seq_id).SerializeToString()
     return struct.pack('>H', len(head)) + head + body
 
 

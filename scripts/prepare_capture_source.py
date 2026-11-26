@@ -48,13 +48,14 @@ def prepare(version):
         for path in (ROOT / directory).rglob('*'):
             if path.is_file() and path.suffix in suffixes and '__pycache__' not in path.parts:
                 add(path.relative_to(ROOT))
-    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'one-click-ui.js']:
+    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'test_life_social.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'life-social-ui.js', 'one-click-ui.js']:
         add('desktop/test/' + name)
-    for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/github-capture-review/README.md', 'docs/github-capture-review/RELEASE-0.6.0.md',
+    for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/capture-life-social-format.md', 'docs/github-capture-review/README.md', f'docs/github-capture-review/RELEASE-{version}.md',
                  'scripts/bootstrap_capture_build.ps1', 'scripts/prepare_capture_source.py', 'scripts/sign_capture_update.mjs']:
         add(name)
     files['README.md'] = (ROOT / 'docs/github-capture-review/README.md').read_bytes()
-    files['CHANGELOG.md'] = (ROOT / 'docs/github-capture-review/RELEASE-0.6.0.md').read_bytes()
+    changelog = ROOT / 'CHANGELOG.md'
+    files['CHANGELOG.md'] = (changelog if changelog.is_file() else ROOT / f'docs/github-capture-review/RELEASE-{version}.md').read_bytes()
     package = json.loads(files['desktop/package.json'])
     package.update(name='archive-desk', productName='Archive Desk', version=version, main='capture-main.mjs')
     files['desktop/package.json'] = json.dumps(package, indent=2).encode()

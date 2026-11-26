@@ -46,6 +46,7 @@ import net_pb2  # type: ignore  # noqa: E402
 from pcap_compat import prepare_capture  # noqa: E402
 from exploration import Exploration, render_report  # noqa: E402
 from account_identity import AccountIdentityIndex  # noqa: E402
+from packet_context import PacketContexts  # noqa: E402
 
 MAX_DECOMPRESSED_BODY = 32 * 1024 * 1024
 MAX_STREAM_DECOMPRESSED = 256 * 1024 * 1024
@@ -474,6 +475,7 @@ def analyze_pcap(pcap_path: Path, out_dir: Path, *, write_account_archive=True) 
     garden_layouts: dict[int, net_pb2.SceneGardenData] = {}
     player_names: dict[int, str] = {}
     garden_packets: dict[int, list[str]] = defaultdict(list)
+    packet_contexts = PacketContexts()
 
     for sid in streams:
         node0, node1, b01, b10, gap_directions = _follow_tcp_stream(pcap_path, sid)
@@ -503,6 +505,8 @@ def analyze_pcap(pcap_path: Path, out_dir: Path, *, write_account_archive=True) 
             if not payload:
                 continue
             pkts, remaining = parse_game_stream(payload)
+            if remaining or gap_directions:
+                packet_contexts.mark_incomplete(sid)
             if remaining and (pkts or looks_like_game_stream(payload) or p0 in GAME_PORTS or p1 in GAME_PORTS):
                 incomplete_streams.append({"stream_id": sid, "direction": dir_label, "trailing_bytes": remaining})
                 trailing_streams.append({"stream_id": sid, "direction": dir_label,
@@ -528,6 +532,8 @@ def analyze_pcap(pcap_path: Path, out_dir: Path, *, write_account_archive=True) 
                 stem = f"{global_seq:05d}_s{sid}_{dir_label}_{msg_id}_{safe_name}"
 
                 body = pkt["body"]
+                packet_contexts.add(net_pb2, msg_name, body, pkt, sid, dir_label, stem,
+                                    incomplete=bool(gap_directions))
                 if pkt["decompress_err"]:
                     decode_errors.append({"seq": global_seq, "msg": msg_name, "err": pkt["decompress_err"]})
                     if msg_id != 1004:
@@ -645,6 +651,7 @@ def analyze_pcap(pcap_path: Path, out_dir: Path, *, write_account_archive=True) 
         "separate_garden_uids": sorted(separated.keys() - {0}),
     }
     summary_path = out_dir / "summary.json"
+    packet_contexts.write(out_dir)
     summary.update(identities.metadata())
     filename_key = identities.filename_key()
     if filename_key is not None and write_account_archive:
@@ -655,6 +662,7 @@ def analyze_pcap(pcap_path: Path, out_dir: Path, *, write_account_archive=True) 
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     if filename_key is not None and write_account_archive:
         files = [summary_path, exploration_path, exploration_text_path,
+                 *([out_dir / 'packet-context.json'] if (out_dir / 'packet-context.json').is_file() else []),
                  *sorted(raw_dir.glob("*.bin")), *sorted(json_dir.glob("*.json"))]
         write_zip(account_zip, files)
         print(f"已保存账号 ZIP {account_zip}")

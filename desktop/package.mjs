@@ -71,7 +71,7 @@ try {
     if (variant.dependencies.length) {
       for (const file of [...variant.dependencies, 'THIRD-PARTY.txt'])
         await cp(join(toolkitSource, file), join(dependencies, file), { recursive: true, filter: cleanSource })
-      for (const file of ['parse_pcap.py', 'pcap_compat.py', 'account_identity.py', 'exploration.py', 'exploration_catalog.json', 'SOURCE.md', 'PROVENANCE.json'])
+      for (const file of ['parse_pcap.py', 'pcap_compat.py', 'account_identity.py', 'exploration.py', 'exploration_catalog.json', 'packet_context.py', 'SOURCE.md', 'PROVENANCE.json'])
         await cp(join(here, 'capturelib', file), join(dependencies, file))
     }
     const licenses = join(desktop, 'licenses')
@@ -90,7 +90,9 @@ try {
       await cp(join(repo, 'docs/capture-one-click.md'), join(desktop, 'Capture-guide.md'))
       await cp(join(repo, 'docs/github-capture-review/README.md'), join(desktop, 'README.md'))
       await cp(join(repo, 'docs/capture-quick-start.zh-CN.txt'), join(desktop, '使用说明.txt'))
-      await cp(join(repo, 'docs/github-capture-review/RELEASE-0.6.0.md'), join(desktop, 'Release-notes.md'))
+      await cp(join(repo, `docs/github-capture-review/RELEASE-${version}.md`), join(desktop, 'Release-notes.md'))
+      await mkdir(join(desktop, 'docs'), { recursive: true })
+      await cp(join(repo, 'docs/capture-life-social-format.md'), join(desktop, 'docs/capture-life-social-format.md'))
     }
     if (role === 'client' || role === 'server') await cp(join(repo, 'docs/sakurafrp-test.md'), join(desktop, '外部连接测试.md'))
     if (role === 'client' || role === 'server') await cp(join(repo, 'docs/bilibili-test.md'), join(desktop, 'B服实验接入.md'))

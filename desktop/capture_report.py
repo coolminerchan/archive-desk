@@ -23,11 +23,13 @@ import dungeons as dungeon_module
 from archive_files import ArchiveView, garden_owner
 from own_scenes import OwnScenes
 from capture_version import VERSION
+from packet_context import REQUESTS as CONTEXT_REQUESTS, FILENAME as CONTEXT_FILE, read_contexts
+from life_social import LifeSocial, quality_items as life_social_quality, render_report as render_life_social
 
 MAX_FILE = 512 << 20
 MAX_MESSAGE = 32 << 20
 MAX_TOTAL = 256 << 20
-PACKET = re.compile(r'_(s2c|d0to1|d1to0)_(\d+)_([A-Za-z0-9_]+)$')
+PACKET = re.compile(r'_(s2c|c2s|d0to1|d1to0)_(\d+)_([A-Za-z0-9_]+)$')
 
 
 def load_parser(toolkit):
@@ -70,14 +72,19 @@ def zip_packets(path, parser, *, include_gardens=False):
             if not match:
                 continue
             code, packet_name = int(match[2]), match[3]
-            if code in parser.LOGIN_REQUEST_IDS or packet_name.endswith('Req'):
+            if code in parser.LOGIN_REQUEST_IDS:
+                continue
+            request = packet_name in CONTEXT_REQUESTS and match[1] == 'c2s' and not owned
+            if packet_name.endswith('Req') and not request:
+                continue
+            if match[1] == 'c2s' and not request:
                 continue
             canonical = by_code.get(code)
             if canonical and canonical != packet_name:
                 raise ValueError('协议 ID 与响应文件名不一致')
             if not canonical and packet_name != 'Unknown_' + str(code):
                 continue
-            if canonical and not canonical.endswith(('Rsp', 'Notice')):
+            if canonical and not canonical.endswith(('Rsp', 'Notice')) and not request:
                 continue
             if owned and code not in parser.GARDEN_SCENE_NOTICE_IDS | {parser.SCENE_DATA_NOTICE_ID}:
                 continue
@@ -198,6 +205,9 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
         raise ValueError('请选择 PCAP、PCAPNG 或账号 ZIP')
 
     audit_started = time.perf_counter()
+    contexts = read_contexts(output) if path.suffix.lower() != '.zip' else read_contexts(path, archive=True)
+    life_social = LifeSocial(parser.net_pb2)
+    included_stems = set()
     counts, empty = Counter(), Counter()
     messages, decoded_counts, account_data = [], Counter(), {}
     identities = AccountIdentityIndex()
@@ -210,6 +220,7 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
     exploration = Exploration(parser.net_pb2)
     dungeons = dungeon_module.Dungeons(parser.net_pb2)
     for stem, code, name, raw, body, error in packets:
+        included_stems.add(stem)
         if path.suffix.lower() == '.zip':
             # Preserve opaque and failed responses for future protocol support.
             # A login response that cannot be sanitized is deliberately omitted.
@@ -219,6 +230,11 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
             if body is not None:
                 (output / 'json').mkdir(exist_ok=True)
                 (output / 'json' / (stem + '.json')).write_text(json.dumps(body, ensure_ascii=False), encoding='utf-8')
+        if purpose != 'gardens':
+            source = 'raw/' + stem + '.bin'
+            life_social.add(name, raw, source, contexts.match(source, name, raw), error=error)
+        if name in CONTEXT_REQUESTS:
+            continue
         if code in equipment_audit.NAMES:
             messages.append((code, None if error else raw))
         if error == 'unknown_protocol':
@@ -308,6 +324,8 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
         row['matches'] = bool(row['matches'] and integrity_known and not failures and not gaps and
             not source_summary.get('decode_fallback_count') and len(account_data) == 1 and not row['other_only'])
     result = checklist.report(counts, empty, phase='complete', readable=bool(successful or (scenes and scenes['scene_count'])), warning=' '.join(warnings))
+    supplemental = life_social.summary(identities)
+    result['items'].extend(life_social_quality(supplemental))
     result['items'] = [item for item in result['items'] if item['id'] != 'gacha_records']
     for item in result['items']:
         if item['id'] in audit['equipment'] and item['state'] in ('collected', 'empty'):
@@ -327,7 +345,7 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
         dungeons=dungeons.summary(identities),
         identity=identities.single(), account_uid=identities.metadata()['account_uid'],
         excluded=['gacha_records'], export=str(output), analysis_version=VERSION, purpose=purpose,
-        own_scenes=scenes)
+        own_scenes=scenes, life_social=life_social.summary(identities, compact=True))
     result['quality'].update(missing_categories=[item['id'] for item in result['items'] if item['state'] == 'missing'],
                             empty_categories=[item['id'] for item in result['items'] if item['state'] == 'empty'])
     result['timings'] = dict(source_summary.get('timings') or {}) if path.suffix.lower() != '.zip' else {}
@@ -379,11 +397,18 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
     (output / 'exploration.txt').write_text(exploration_module.render_report(result['exploration']), encoding='utf-8')
     (output / 'dungeons.json').write_text(json.dumps(result['dungeons'], ensure_ascii=False), encoding='utf-8')
     (output / 'dungeons.txt').write_text(dungeon_module.render_report(result['dungeons']), encoding='utf-8')
+    if purpose != 'gardens':
+        contexts.write(output)
+        (output / 'life-social.json').write_text(json.dumps(supplemental, ensure_ascii=False), encoding='utf-8')
+        (output / 'life-social.txt').write_text(render_life_social(supplemental), encoding='utf-8')
     archive_started = time.perf_counter()
     if result.get('account_zip'):
         with ZipFile(result['account_zip'], 'w', ZIP_DEFLATED) as archive:
             for file in [output / 'exploration.json', output / 'exploration.txt', output / 'dungeons.json', output / 'dungeons.txt',
-                         *sorted((output / 'raw').glob('*.bin')), *sorted((output / 'json').glob('*.json')),
+                         output / 'life-social.json', output / 'life-social.txt',
+                         *([output / CONTEXT_FILE] if (output / CONTEXT_FILE).is_file() else []),
+                         *sorted(f for f in (output / 'raw').glob('*.bin') if f.stem in included_stems),
+                         *sorted(f for f in (output / 'json').glob('*.json') if f.stem in included_stems),
                          *sorted((output / 'own-scenes').rglob('*.json')), *sorted((output / 'own-scenes').rglob('*.bin'))]:
                 archive.write(file, file.relative_to(output))
     result['timings']['archive_ms'] = round((time.perf_counter() - archive_started) * 1000) if result.get('account_zip') else None

@@ -31,7 +31,8 @@ test('diagnostics exclude identity, paths, credentials and arbitrary protocol fi
     quality: { integrity_known: true, tcp_gap_directions: 1, tail_directions: 2, incomplete_directions: 2, error: secret },
     session_timings: { preparation_ms: 12, first_response_observed_ms: 200, conversion_ms: secret },
     timings: { archive_ms: 42, access_token: secret }, equipment: { weapon: { observed: 466, snapshot: 433, other_only: 33, without_id: secret } },
-    items: [{ id: secret, hint: secret, state: 'missing' }], dungeons: { observed_count: 180, detailed_count: 0, snapshots: [secret] } }
+    items: [{ id: secret, hint: secret, state: 'missing' }], dungeons: { observed_count: 180, detailed_count: 0, snapshots: [secret] },
+    life_social: { friend_name: secret, history: { counts: [secret] }, packet_context: { connection_id: secret } } }
   const result = captureDiagnostics(report, { version: '0.5.3', backend: 'compact-etw' })
   assert.equal(result.equipment.weapon.observed, 466)
   assert.equal(result.timings_ms.conversion_ms, null)

@@ -1,5 +1,5 @@
 ;(async () => {
-  const fixture = window.__testFixture
+  const fixture = window.__fixture
   document.addEventListener('click', event => { if (event.isTrusted) { event.preventDefault(); event.stopImmediatePropagation() } }, true)
   const pause = ms => new Promise(ok => setTimeout(ok, ms))
   const check = (condition, message) => { if (!condition) throw new Error(message) }
@@ -19,7 +19,7 @@
     await until(() => !document.querySelector(`[data-action="${name}"]:disabled`), name + ' finished')
   }
   await until(() => window.desktop && document.querySelector('nav'), 'startup')
-  check((await state()).version === '0.6.0', 'Wrong version')
+  check((await state()).version === (fixture.version || '0.7.0'), 'Wrong version')
   await nav('本人场景')
   await until(() => document.body.innerText.includes('独立快照 3 份'), 'account snapshots')
   check(document.body.innerText.includes('登录 UID 7654001'), 'Public UID missing')

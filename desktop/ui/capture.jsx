@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Activity, ArrowDownToLine, CircleCheck, CircleHelp, FolderOpen, Library, Play, Radio, RefreshCw, ScanLine, ShieldCheck, Square, Swords } from 'lucide-react'
+import { Activity, ArrowDownToLine, CircleCheck, CircleHelp, FolderOpen, Library, Play, Radio, RefreshCw, ScanLine, ShieldCheck, Sprout, Square, Swords, Users } from 'lucide-react'
 import { guidedSteps } from './capture-guide.mjs'
 import { artwork, portraits, ArtHero, ArtHeading } from './artwork.jsx'
 import GardenCapturePage from './gardens.jsx'
 import OwnScenesPage from './own-scenes.jsx'
+import LifeSocialRecords from './life-social.jsx'
 
 const channels = [['auto', '自动 / 通用 PC'], ['cn-pc', '国服 PC · TapTap / B站'], ['steam', 'Steam · 动态端口'], ['emulator', '安卓渠道 · 模拟器'], ['manual', '手动连接范围']]
 const states = { collected: '已见响应', empty: '已收到空列表', partial: '有数据，待补齐', missing: '尚缺响应', waiting: '等待响应', unknown: '暂无法判断' }
@@ -179,7 +180,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
         <p className="capture-hint">{peer ? `范围 ${peer} · TCP ${port || '全部端口'}` : `范围 TCP ${port || '11001–11004、21001、21002'}`}<br />连续记录，自动换文件。单次原始记录限 30 分钟或约 448 MB。</p>
       </Card> : <Card icon={Play} title="游戏里这样操作" help={state.recording ? `建议下一步：${next?.title || '完成浏览后退出游戏，等待保存'}` : '按顺序浏览即可。标记表示已见响应，最终数量在保存后核对。'}>
         <div className="capture-steps">{steps.map((step, index) => <details key={step.id} className={'capture-step ' + step.status} open={step.id === next?.id}>
-          <summary><span className="step-avatar"><img src={portraits[index]} alt="" /><b>{step.status === 'received' ? '✓' : index + 1}</b></span><strong>{step.title}</strong><small>{step.status === 'received' ? '已见响应' : step.status === 'partial' ? '继续补充' : '待浏览'}</small></summary>
+          <summary><span className="step-avatar">{step.id === 'life' ? <Sprout size={24} style={{ margin: 6 }} /> : step.id === 'social' ? <Users size={24} style={{ margin: 6 }} /> : <img src={portraits[step.id === 'other' ? 5 : index]} alt="" />}<b>{step.status === 'received' ? '✓' : index + 1}</b></span><strong>{step.title}</strong><small>{step.status === 'received' ? '已见响应' : step.status === 'partial' ? '继续补充' : '待浏览'}</small></summary>
           <p>{step.text}</p></details>)}</div>
         <p className="capture-hint">实时核对可能延迟，无需等每项变色才继续。若浏览完毕，可退出游戏自动保存，也可点“停止并保存”。</p>
       </Card>}
@@ -208,13 +209,15 @@ function AccountCapturePage({ state, tab, busy, act }) {
       <p className="capture-hint">诊断只含版本、计数与耗时，不含 UID、昵称、路径、连接地址或原始协议正文。</p>
     </Card>}
     {observation?.dungeons && <DungeonRecords report={observation.dungeons} />}
+    {observation?.life_social && <LifeSocialRecords report={observation.life_social} />}
+    {report && !state.recording && !report.life_social && <div className="capture-guide warning"><strong>这是旧版核对结果</strong><p>点击「核对本次采集」可生成生活与社交补充检查项。缺少请求头的旧 ZIP 会保留未知分类；如有原始抓包，可打开重新解析，原始文件会保留。</p></div>}
     <Card className="checklist-card" icon={Activity} title="数据采集清单" help="已见响应只表示有采集证据。按提示补开界面，装备另核对列表数量。">
       {checklist.length ? <div className="capture-checklist">{checklist.map(item => <div key={item.id} className={'checklist-item ' + item.state}>
         <div><strong>{item.label}</strong><span className="evidence-tag">{item.detail || states[item.state] || item.status}</span></div><p>{item.hint}</p>
         <small title={Object.entries(item.evidence).map(([name, n]) => `${name} × ${n}`).join(' · ')}>{item.count ? `${item.count} 条证据 · ${Object.keys(item.evidence).filter(k => !k.startsWith('@')).join('、') || '推送数据'}` : '尚无可用响应'}</small>
       </div>)}</div> : <Empty>开始采集后显示实时观测。未落盘的数据保持未知，停止后生成最终清单。</Empty>}
     </Card>
-    <div className="capture-guide"><strong>建议依次浏览</strong><p>角色与穿搭 → 背包、武器、护甲、海报并翻页 → 宠物 → 家园及各套预设 → 邮件、好友 → 成就、图鉴、探索与档案。</p></div>
+    <div className="capture-guide"><strong>建议依次浏览</strong><p>角色与穿搭 → 背包、武器、护甲、海报并翻页 → 宠物 → 家园及各套预设 → 六类生活职业与对应图鉴 → 好友、申请、黑名单 → 邮件、成就、探索与档案。</p></div>
     {!!report?.gardens?.length && <Card className="checklist-card" icon={Library} title="独立家园备份" help="拜访的家园按主人单独归档，避免混入当前账号。">
       {report.gardens.map((garden, index) => <div className="audit-row" key={garden.owner_uid}><div><strong>{garden.owner_name} · 家园编号 {garden.owner_uid}</strong><p>家具 {garden.furniture_count ?? '未确认'} 件</p></div>
         {action('capture-export-garden', '另存家园 ZIP', ArrowDownToLine, { index }, locked)}</div>)}

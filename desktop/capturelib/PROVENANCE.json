@@ -13,5 +13,5 @@
   "reviewed_release": "v1.4.9",
   "review_scope": "Nested garden archive compatibility, own-channel scene snapshots, furniture counters, export validation and preflight. Independent continuous recording and separate visited-home delivery retained.",
   "selective_fix": "aadc62e TCP marker boundary; local sequence coverage and 0.5.1/0.5.2 fixes retained",
-  "local_helpers": ["account_identity.py", "capture_quality.py", "dungeons.py", "archive_files.py", "own_scenes.py", "capture_version.py"]
+  "local_helpers": ["account_identity.py", "capture_quality.py", "dungeons.py", "archive_files.py", "own_scenes.py", "capture_version.py", "packet_context.py", "life_social.py"]
 }

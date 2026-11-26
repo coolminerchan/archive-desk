@@ -25,6 +25,16 @@ Every distinct snapshot is retained. The table shows the largest recorded snapsh
 
 A standalone scene archive carries declared ownership metadata. Opening one does not establish a fresh login or create an account backup.
 
+## Life and social records
+
+Open all six profession pages and their respective pictorial pages. Base levels, skills, achievements, and pictorial history counts are separate observations. Viewing one does not establish coverage of the other. No crafting or reward collection is needed.
+
+Open the friends, applications, and blacklist tabs separately. The tool pairs their requests and responses by connection and PacketId. It preserves classifications and original profiles; it does not create accounts, homes, or relationships.
+
+Missing or ambiguous exchanges remain unknown. Existing response-only ZIPs cannot establish a list category from ordering. If the original recording is available, reanalysis can recover captured request evidence. An absent pictorial-history response still needs a supplemental capture of that page.
+
+The account ZIP contains life-social.json and, when recorded, packet-context.json. All snapshots remain separate; the display does not establish their final state.
+
 ## Inspection and recovery
 
 ZIP, PCAP, and PCAPNG input is supported. Both standalone decoration packages and account ZIPs containing garden directories can be inspected. Legacy scene indexes are accepted with their original bare SceneData records.
