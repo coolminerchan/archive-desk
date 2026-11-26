@@ -89,6 +89,8 @@ try {
     if (role === 'capture') {
       await cp(join(repo, 'docs/capture-one-click.md'), join(desktop, 'Capture-guide.md'))
       await cp(join(repo, 'docs/github-capture-review/README.md'), join(desktop, 'README.md'))
+      await cp(join(repo, 'docs/capture-quick-start.zh-CN.txt'), join(desktop, '使用说明.txt'))
+      await cp(join(repo, 'docs/github-capture-review/RELEASE-0.6.0.md'), join(desktop, 'Release-notes.md'))
     }
     if (role === 'client' || role === 'server') await cp(join(repo, 'docs/sakurafrp-test.md'), join(desktop, '外部连接测试.md'))
     if (role === 'client' || role === 'server') await cp(join(repo, 'docs/bilibili-test.md'), join(desktop, 'B服实验接入.md'))

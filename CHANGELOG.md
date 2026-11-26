@@ -1,13 +1,53 @@
-# 0.6.0
+# archive-desk v0.6.0
 
-- Added an own-scenes view with per-scene snapshot counts and object summaries. Distinct snapshots remain separate and can be exported as a scene archive.
-- Added support for garden directories and nested garden ZIPs inside account archives, including legacy layout and scene indexes.
-- Added validated exports with ownership checks, SHA-256 verification, temporary-file delivery, and replacement only after validation succeeds.
-- Expanded preflight checks to cover package completeness, protocol resources, output access, and available space.
-- Added independent update checks and signed package downloads. Verified updates run from a separate directory, leaving the previous version available for rollback.
-- Separated the collector's desktop entry point from the other applications.
-- Improved error messages and retained detailed errors in local logs. Allowed additional time for Windows recording components to initialize on a cold start.
+Portable Windows x64 release.
 
-Account archives, own scenes, and visited-home collections remain distinct outputs. Scene and furniture counts describe observed data and do not establish coverage of unloaded areas.
+## Downloads
 
-The version number applies to the collector only. The other applications have separate release schedules.
+- **OverField-Capture-0.6.0-Windows-x64.zip** — complete application with its runtime components.
+- **OverField-Capture-0.6.0-Source.zip** — source and build scripts.
+- **SHA256SUMS.txt** — checksums for the application, source, and update descriptor.
+- **capture-update.json** — signed update descriptor used by the application.
+
+Download the Windows package to run the application. GitHub's automatic source archives do not include the portable runtime.
+
+## Getting started
+
+1. Extract the entire Windows package into a writable directory.
+2. Run `账号采集工具.exe`. Keep `runtime` and `resources` beside it.
+3. Select one-click capture and allow the administrator prompt. Sign in through the original client after recording is ready.
+4. Browse the views you want to preserve, then exit the client or stop capture. Wait for analysis and export to finish.
+
+The package includes **使用说明.txt** in Chinese and **Capture-guide.md** in English. [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/consumer/) is required if it is not already installed.
+
+## Included
+
+- One-click recording, client discovery, and account inspection.
+- Equipment observations, exploration records, and captured progress.
+- A separate visited-home collection with individual and collection exports.
+- Own-scene summaries and export of distinct scene snapshots.
+- Compatibility with garden directories, nested garden ZIPs, and legacy scene indexes.
+- Validated exports with ownership checks, SHA-256 verification, and replacement only after the copy passes validation.
+- Preflight checks, recording recovery, local error logs, and optional update checks.
+
+Verified updates install into a separate directory. The previous version remains available for rollback.
+
+## Notes
+
+Capture preserves data returned during the session. Unopened lists and unloaded scene areas remain unverified. Walk through the relevant home areas and wait for furniture to load.
+
+The displayed login UID and internal role ID remain separate. Archive metadata is not treated as a fresh login.
+
+The application is Windows x64 only. Client channels may differ in connection handling and protocol support.
+
+## Validation
+
+60 Python tests, 35 Node tests, native-window workflows, and a clean source build passed. Recorded-data replay preserved the original account responses and all 59 homes in the validation collection.
+
+## Credits
+
+Thanks to **Shuiyin (水音)** for the original capture tooling.
+
+- [inori-dream/miaomiao-launcher](https://github.com/inori-dream/miaomiao-launcher)
+- [BanterSR/Lolo](https://github.com/BanterSR/Lolo)
+- [byzp/of-ps](https://github.com/byzp/of-ps)

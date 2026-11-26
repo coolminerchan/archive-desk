@@ -50,7 +50,7 @@ def prepare(version):
                 add(path.relative_to(ROOT))
     for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'one-click-ui.js']:
         add('desktop/test/' + name)
-    for name in ['docs/capture-one-click.md', 'docs/github-capture-review/README.md',
+    for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/github-capture-review/README.md', 'docs/github-capture-review/RELEASE-0.6.0.md',
                  'scripts/bootstrap_capture_build.ps1', 'scripts/prepare_capture_source.py', 'scripts/sign_capture_update.mjs']:
         add(name)
     files['README.md'] = (ROOT / 'docs/github-capture-review/README.md').read_bytes()
