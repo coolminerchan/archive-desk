@@ -1,0 +1,9 @@
+/.tools/
+/.local/
+/dist/
+*.pcap
+*.pcapng
+*.etl
+*.key
+*.pem
+*.db

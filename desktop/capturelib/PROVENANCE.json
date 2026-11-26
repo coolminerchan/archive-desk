@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/inori-dream/miaomiao-launcher",
+  "commit": "6a2816ded52a4a3c1f5ab9b3768f6e048f409f6f",
+  "collector": "1.0.12-launcher-integration",
+  "files": [
+    "parse_pcap.py",
+    "pcap_compat.py",
+    "exploration.py",
+    "exploration_catalog.json"
+  ],
+  "checklist_base": "fcd3cb8 continuous observer; local integration changes described in SOURCE.md",
+  "reviewed_head": "f0a16e5da29bd7c399da60990f8b8466e6b9b666",
+  "reviewed_release": "v1.4.9",
+  "review_scope": "Nested garden archive compatibility, own-channel scene snapshots, furniture counters, export validation and preflight. Independent continuous recording and separate visited-home delivery retained.",
+  "selective_fix": "aadc62e TCP marker boundary; local sequence coverage and 0.5.1/0.5.2 fixes retained",
+  "local_helpers": ["account_identity.py", "capture_quality.py", "dungeons.py", "archive_files.py", "own_scenes.py", "capture_version.py"]
+}

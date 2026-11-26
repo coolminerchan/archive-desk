@@ -1,0 +1,48 @@
+# Capture guide
+
+## Account capture
+
+1. Run the application and select the one-click capture button. Allow elevation for live recording. Select the original client executable or Steam shortcut if discovery needs a path.
+2. Wait until recording is ready. The client opens after the recorder starts. If it is already running, sign out and sign in again to capture the account response.
+3. Browse characters, outfit categories, inventory pages, storage, weapons, armor, and posters. Equipped items alone do not establish complete equipment coverage.
+4. Open the world map and each unlocked region's exploration pages. Visit the relevant scenes and wait for objects to load. Open collection and moon pages as needed. A single scene response does not establish coverage of other regions.
+5. Visit your own home, presets, furniture, and pets. Walk through the areas you want to preserve. Open mail, friends, achievement groups, archives, and life skills. Gacha history is optional.
+6. Exit the client or select stop and save. Wait for analysis to finish. A single identified account produces an account ZIP under Documents. Original recordings stay in the session folder for recovery.
+
+The displayed login UID comes from the account response. Internal role IDs remain separate and are used for data associations. Missing login identifiers are not guessed.
+
+## Visited-home collection
+
+Open the dedicated decoration page and start its recorder. Visit another player's home through the client. Walk through each relevant area and wait for furniture to load before moving on. Each observed owner is listed separately. Private or inaccessible homes cannot be captured through a failed visit.
+
+Export one home or the complete collection. Account records and visited-home layouts remain separate. This module does not import decorations into your own home.
+
+## Own scenes
+
+The own-scenes page reads completed account captures, account ZIPs, and standalone scene archives. Ownership is matched to the account's internal ID, with the recorded public UID used only when the scene has no internal channel ID.
+
+Every distinct snapshot is retained. The table shows the largest recorded snapshot for each scene; snapshots are not merged into a purported final layout. Snapshot summaries include furniture, placed characters, decor, vehicles, chairs, and treasure boxes when present.
+
+A standalone scene archive carries declared ownership metadata. Opening one does not establish a fresh login or create an account backup.
+
+## Inspection and recovery
+
+ZIP, PCAP, and PCAPNG input is supported. Both standalone decoration packages and account ZIPs containing garden directories can be inspected. Legacy scene indexes are accepted with their original bare SceneData records.
+
+Before an export replaces its destination, the tool checks ZIP contents and ownership, copies into a temporary file, verifies SHA-256, and validates the copy. A failed export preserves the previous destination.
+
+Preflight checks cover recording permissions, component availability, protocol resources, output writability, and free space. The settings page can reopen the last recording for analysis. Error details stay in the local logs directory; diagnostic export uses a restricted field list.
+
+## Updates
+
+Use the settings page to check for updates. Checking at startup is optional. Downloads are accepted only from the configured repository and must pass signature, digest, product, and archive checks.
+
+The verified version is installed in a separate directory. Starting it closes the current window first. Keep the previous directory if rollback is needed. Capture and analysis must finish before updating.
+
+A private repository or an unpublished release may have no anonymously accessible update. The application does not request or embed a GitHub account token.
+
+## Limits
+
+Only data returned by the client session can be preserved. An empty server response, an unseen category, an unvisited region, and a partially loaded scene are different states. None is presented as proof of complete account coverage.
+
+One recording stops at 448 MiB or 30 minutes. The UI shows recording storage and the active backend. Record another session if needed; retain the original files until the resulting archives have been checked.

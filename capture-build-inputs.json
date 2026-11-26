@@ -1,0 +1,34 @@
+{
+  "version": "0.6.0",
+  "runtime_package": "OverField-Capture-0.6.0-Windows-x64.zip",
+  "runtime_package_sha256": "9551802aa5b05cd909e0219f340d8dc6988ec44ae4895de8725b2520f515ee28",
+  "webview2_url": "https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/1.0.4370.26/microsoft.web.webview2.1.0.4370.26.nupkg",
+  "webview2_sha256": "1c0dacac84b70109b3fd42f90c53a0ba942abc3a87590d7a4e0ccd86e4a06cf4",
+  "native_files": [
+    {
+      "path": "json.hpp",
+      "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63",
+      "url": "https://raw.githubusercontent.com/nlohmann/json/v3.12.0/single_include/nlohmann/json.hpp"
+    },
+    {
+      "path": "JSON-LICENSE.txt",
+      "sha256": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603",
+      "url": "https://raw.githubusercontent.com/nlohmann/json/v3.12.0/LICENSE.MIT"
+    },
+    {
+      "path": "webview2/LICENSE.txt",
+      "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55",
+      "url": null
+    },
+    {
+      "path": "webview2/build/native/include/WebView2.h",
+      "sha256": "4e47763725f507235e8a12f35b9f41d7e348586153414c39fc1e9108875c181f",
+      "url": null
+    },
+    {
+      "path": "webview2/build/native/x64/WebView2LoaderStatic.lib",
+      "sha256": "4548e52f78e651651b96b42640b1c75c22e66568c7ac2966bddda2be9d23e45e",
+      "url": null
+    }
+  ]
+}
