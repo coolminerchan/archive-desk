@@ -9,6 +9,7 @@ Added scene names and clearer world-progress evidence.
 - Older cached reports can display verified scene names without a new capture. Equipment and capture-quality messages identify the actual missing information instead of a generic review warning.
 - Exploration snapshots and garden decoration snapshots have separate tables. Scene 6 includes an explanation of its unnamed night-scene resource and its absence from the current world configuration.
 - All eight browsing-guide steps use distinct in-game portraits, including life and social steps.
+- Completed steps no longer repeat browsing instructions. Optional profession-history counts are separate from saved profession levels, skills, achievements, ordinary manuals, and social categories.
 
 This release updates capture and inspection. Server-side restoration still needs to return the captured completion fields; this collector does not modify game saves.
 
