@@ -1,3 +1,11 @@
+# 0.7.6
+
+- Display the complete backup process on the home page, including game browsing, saving, and follow-up checks.
+- Separate account backup, saved records, home decoration, and settings; keep technical details expandable.
+- Inspect recorded Nebula Tree pages, active nodes, tasks, and reward claims without discarding original snapshots.
+- Show profession-scoped skill names and individual levels, separately from profession levels and optional history.
+- Reanalyse existing archives for newly exposed details; preserve unknown and successful empty responses as distinct states.
+
 # 0.7.3
 
 - Display resource-backed Chinese names for scenes, keeping blank or unrecognized names explicit.
