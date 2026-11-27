@@ -92,3 +92,12 @@ the synchronized TextReader in Windows PowerShell could block the entire limit
 and stop-flag loop. Account and garden limit states are independent.
 Microsoft API reference for buffer semantics:
 https://learn.microsoft.com/en-us/windows/win32/api/evntrace/ns-evntrace-event_trace_properties
+
+Local 0.7.4 additions: nebula_tree.py retains successful AbilityBadgeListRsp
+snapshots, keeping page-scoped active nodes, task counters and reward claims
+separate. It does not use the unrelated BlessTree protocol or restore saves.
+life_social.py now exposes individual skill levels and lossless study timestamps.
+life_skill_catalog.json contains only verified names joined through each
+profession's Spell.TextID and matching String section. Identical skill IDs in
+different professions are scoped by life_type; blank resource text stays unnamed.
+Per-file source SHA-256 values remain in the catalog.

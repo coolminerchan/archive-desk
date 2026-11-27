@@ -21,6 +21,17 @@ def basic(kind):
 
 
 class LifeSocialTests(unittest.TestCase):
+    def test_individual_skill_levels_include_zero_and_int64_learning_time(self):
+        msg=basic(1)
+        msg.life_skill.life_skill_info.add(skill_id=30100,lv=10,start_study_time=-1)
+        msg.life_skill.life_skill_info.add(skill_id=30200,lv=0,start_study_time=(1 << 63)-1)
+        self.add('GetLifeInfoRsp',msg)
+        for compact in (False,True):
+            record=self.collector.summary(self.identities,compact=compact)['base']['types'][0]['snapshots'][0]
+            self.assertEqual(record['skills'],2)
+            self.assertEqual(record['skill_details'][0],dict(skill_id=30100,level=10,start_study_time='-1'))
+            self.assertEqual(record['skill_details'][1],dict(skill_id=30200,level=0,start_study_time='9223372036854775807'))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

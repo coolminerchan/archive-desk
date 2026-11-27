@@ -6,7 +6,7 @@ export const captureSteps = [
   { id: 'garden', title: '查看自己的家园和宠物', needs: ['garden', 'pet'], text: '进入自己的家园并等待加载，再切换各套家园预设、家具与宠物页面。' },
   { id: 'life', title: '查看六类生活职业与图鉴', needs: ['life_base'], optional: ['life_history'], text: '只补充尚未返回的生活职业基础。生活图鉴历史次数单独记录，不影响已保存的等级、技能和成就。' },
   { id: 'social', title: '切换社交列表分类', needs: ['social_lists'], text: '只需打开尚未返回的好友、好友申请或黑名单分类，无需添加或删除好友。' },
-  { id: 'other', title: '补齐其他账号资料', needs: ['mail', 'achieve', 'manual', 'archive'], text: '打开邮件、各组成就、图鉴和档案。完成浏览后退出游戏，工具会自动整理备份。抽卡历史无需操作。' }
+  { id: 'other', title: '星云树与其他账号资料', needs: ['nebula', 'mail', 'achieve', 'manual', 'archive'], text: '打开星云树并切换可见分区等待加载，无需激活或领奖。再按缺项打开邮件、各组成就、图鉴和档案。完成后退出游戏，工具会自动整理。抽卡历史无需操作。' }
 ]
 
 export function guidedSteps(report) {
@@ -21,6 +21,8 @@ export function guidedSteps(report) {
     const oldSupplement = report && ['life','social'].includes(step.id) && !rows.some(Boolean)
     if (oldSupplement) return { ...step, received, total: rows.length, status:'legacy', statusLabel:'旧报告未核对',
       text:'这份旧报告没有此项分类信息，请先重新解析原始记录；无需先回游戏重复浏览。' }
+    if (report && step.id === 'other' && !items.has('nebula')) return { ...step, received, total: rows.length, status:'legacy', statusLabel:'星云树待重解析',
+      text:'旧报告未单列星云树。先重新解析已有账号 ZIP，确认缺少的项目后再补充浏览。' }
     if (step.id === 'life' && status === 'received') {
       statusLabel = '基础已保存'
       text = '六类职业基础已保存，已有等级、技能和成就无需重复采集。' +

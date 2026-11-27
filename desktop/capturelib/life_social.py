@@ -48,6 +48,9 @@ class LifeSocial:
                         sections=sections,
                         level=int(message.life_base_info.level) if 'life_base_info' in sections else None,
                         skills=len(message.life_skill.life_skill_info) if 'life_skill' in sections else None,
+                        skill_details=[dict(skill_id=int(skill.skill_id), level=int(skill.lv),
+                            start_study_time=str(skill.start_study_time)) for skill in message.life_skill.life_skill_info]
+                            if 'life_skill' in sections else None,
                         achieves=len(message.life_achieve.life_achieve_) if 'life_achieve' in sections else None,
                         rewarded=len(message.life_achieve.rewarded_life_achieve_id_lst) if 'life_achieve' in sections else None))
                     return

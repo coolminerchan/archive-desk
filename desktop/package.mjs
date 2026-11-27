@@ -72,7 +72,7 @@ try {
     if (variant.dependencies.length) {
       for (const file of [...variant.dependencies, 'THIRD-PARTY.txt'])
         await cp(join(toolkitSource, file), join(dependencies, file), { recursive: true, filter: cleanSource })
-      for (const file of ['parse_pcap.py', 'pcap_compat.py', 'account_identity.py', 'exploration.py', 'exploration_catalog.json', 'scene_catalog.json', 'scene_metadata.py', 'world_activities.py', 'packet_context.py', 'SOURCE.md', 'PROVENANCE.json'])
+      for (const file of ['parse_pcap.py', 'pcap_compat.py', 'account_identity.py', 'exploration.py', 'exploration_catalog.json', 'scene_catalog.json', 'scene_metadata.py', 'world_activities.py', 'nebula_tree.py', 'packet_context.py', 'SOURCE.md', 'PROVENANCE.json'])
         await cp(join(here, 'capturelib', file), join(dependencies, file))
     }
     const licenses = join(desktop, 'licenses')

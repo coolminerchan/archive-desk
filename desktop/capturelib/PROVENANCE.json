@@ -14,5 +14,7 @@
   "review_scope": "Nested garden archive compatibility, own-channel scene snapshots, furniture counters, export validation and preflight. Independent continuous recording and separate visited-home delivery retained.",
   "selective_fix": "aadc62e TCP marker boundary; local sequence coverage and 0.5.1/0.5.2 fixes retained",
   "local_helpers": ["account_identity.py", "capture_quality.py", "dungeons.py", "archive_files.py", "own_scenes.py", "capture_version.py", "packet_context.py", "life_social.py", "scene_metadata.py", "world_activities.py"],
-  "scene_reference": "scene_catalog.json joins local CN PC Scene/String/Flag/Scenic/Challenge tables; per-file source digests are retained there"
+  "scene_reference": "scene_catalog.json joins local CN PC Scene/String/Flag/Scenic/Challenge tables; per-file source digests are retained there",
+  "nebula_tree": "Local response-only AbilityBadgeListRsp snapshot summary; unrelated BlessTree protocol is not treated as Nebula Tree evidence",
+  "life_skill_names": "life_skill_catalog.json joins each profession Spell table TextID to its matching String section; names are scoped by life_type and skill ID; source SHA-256 retained"
 }

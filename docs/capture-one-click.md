@@ -1,5 +1,17 @@
 # Capture guide
 
+## Finding captured records
+
+The capture screen has direct shortcuts for crystals, scenic spots, the Nebula Tree, and life skills. The sidebar separates 水晶与景点 from 星云树与生活.
+
+For crystals, open the map, regional exploration and collection pages while recording, then visit unlocked regions and wait for scene loading. Scenic history returns with scene data. Neither requires repeating collection, photography, or rewards. Observations do not establish complete map coverage.
+
+For the Nebula Tree, open its page and browse visible regions. The report separately shows active nodes, task entries, and claimed rewards, retaining all successful response snapshots. No activation or reward claim is required. The collector does not restore server state.
+
+For life skills, open each of the six profession pages and wait for their information. The life report shows profession levels separately from expandable individual skill levels. Skill names without a verified resource mapping are displayed by ID. Profession pictorial-book history is an optional, separate category.
+
+Older cached reports may not contain these details. Open the existing account ZIP to reanalyse it first; results use a new directory and preserve the original. Record another session only for responses genuinely absent from the archive.
+
 ## Account capture
 
 1. Run the application and select the one-click capture button. Allow elevation for live recording. Select the original client executable or Steam shortcut if discovery needs a path.

@@ -5,6 +5,7 @@ import { artwork, guidePortraits, ArtHero, ArtHeading } from './artwork.jsx'
 import GardenCapturePage from './gardens.jsx'
 import OwnScenesPage from './own-scenes.jsx'
 import LifeSocialRecords from './life-social.jsx'
+import { NebulaRecords, CaptureRecordLinks } from './growth-records.jsx'
 import { equipmentLabel, qualityLabel, sceneLabel, sceneNote } from './capture-presentation.mjs'
 
 const channels = [['auto', '自动 / 通用 PC'], ['cn-pc', '国服 PC · TapTap / B站'], ['steam', 'Steam · 动态端口'], ['emulator', '安卓渠道 · 模拟器'], ['manual', '手动连接范围']]
@@ -32,7 +33,7 @@ export default function CapturePage(props) {
     <AccountCapturePage {...props} state={state} busy={other ? 'garden-capture' : props.busy} /></>
 }
 
-function AccountCapturePage({ state, tab, busy, act }) {
+function AccountCapturePage({ state, tab, busy, act, onNavigate }) {
   const [channel, setChannel] = useState('auto')
   const [peer, setPeer] = useState('')
   const [port, setPort] = useState('')
@@ -118,8 +119,19 @@ function AccountCapturePage({ state, tab, busy, act }) {
     <div className="capture-guide"><strong>恢复保留原始数据</strong><p>重新解析会写入新的结果目录。采集组件空闲时可恢复未完成的原始记录。</p></div>
   </>
 
+  if (tab === 'progress') return <>
+    <ArtHeading title="星云树与生活技能" description="激活、领奖与技能等级，在这里单独核对。已有账号包可重新解析查看。" art={artwork.harvest} />
+    <div className="capture-guide"><strong>不用重新激活，也不用练级</strong><p>录制期间打开星云树，再依次查看六类生活职业页，等待资料加载即可。技能详情按回包保存，不需要升级技能、制作物品或领取奖励。</p>
+      <p>旧版报告未展开详情时，点击「打开账号包重新解析」。重新解析会生成新结果，不覆盖原备份。</p>
+      <div className="actions">{action('analyze', '打开账号包重新解析', FolderOpen, undefined, locked)}</div></div>
+    <NebulaRecords report={exploration?.nebula_tree} />
+    {observation?.life_social ? <LifeSocialRecords report={observation.life_social} lifeOnly /> : <Empty>尚无生活职业分类报告。可打开已有账号包重新解析，或开始录制后浏览职业页面。</Empty>}
+  </>
+
   if (tab === 'exploration') return <>
     <ArtHeading title="探索观测报告" description="探索点、收集物、水晶、宝箱、月亮和情绪月亮分别记录。未收到的项目显示未知。" art={artwork.morning} />
+    <div className="map-capture-help"><div><strong>水晶怎么采</strong><p>录制就绪后打开地图、地区探索和收集页，再进入各已解锁地区等待加载。下表「水晶观测」查看已返回 ID；不用重新拾取。</p></div>
+      <div><strong>美丽景点怎么采</strong><p>进入各已解锁地区等待场景加载，历史记录随场景返回。下方「景点与挑战历史证据」查看完成证据；无需重新拍照、挑战或领奖。</p></div></div>
     <div className="capture-guide map-instructions"><strong>地图信息怎么采集</strong><ol>
       <li>打开世界地图和各地区的探索进度，逐一切换已解锁地区。</li>
       <li>打开收集、收藏与月亮页面，切换地区，等待页面加载完成。</li>
@@ -167,6 +179,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
         {action('capture-export', '另存账号 ZIP', ArrowDownToLine, undefined, locked || !report?.account_zip)}</div>
       {report && <p className="capture-source" title={report.input}>来源 {report.input.split(/[\\/]/).at(-1)} · {report.updatedAt?.replace('T', ' ')}</p>}
     </section>
+    <CaptureRecordLinks report={observation} onNavigate={onNavigate} portraits={guidePortraits} />
     <div className="capture-metrics">
       <div><span>成功响应</span><strong>{state.recording ? progress?.readable ? '已观测' : '等待落盘' : report?.successful ?? '—'}</strong><small>{state.recording ? '结束后进行最终核对' : `${report?.packets ?? '—'} 个协议包`}</small></div>
       <div><span>已观测分类</span><strong>{checklist.length ? received + ' / ' + checklist.length : '—'}</strong><small>{pending ? `${pending} 项已有部分记录 · ` : ''}抽卡历史不计入</small></div>

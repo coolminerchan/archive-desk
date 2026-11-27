@@ -7,7 +7,7 @@
   async function nav(label){await until(()=>{const b=[...document.querySelectorAll('nav button')].find(x=>x.innerText.trim()===label);if(!b)return false;b.click();return true});await wait(300)}
   await until(()=>window.desktop&&document.querySelector('nav'))
   check((await state()).version===fixture.version,'Version mismatch')
-  await nav('探索证据')
+  await nav('水晶与景点')
   check(document.body.innerText.includes('樱庭世界·昼')&&document.body.innerText.includes('鸳鸯锅')&&document.body.innerText.includes('星愿学园'),'Scene names missing')
   const table=document.querySelector('[data-testid="world-activities"]');check(table,'Activity evidence table missing')
   check(table.innerText.includes('42')&&table.innerText.includes('110')&&table.innerText.includes('100'),'Activity counts missing')

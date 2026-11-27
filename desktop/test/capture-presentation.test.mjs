@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {equipmentLabel, groupScenes, qualityLabel, sceneCategory, sceneLabel, sceneNote} from '../ui/capture-presentation.mjs'
+import {equipmentLabel, groupScenes, lifeSkillLabel, qualityLabel, sceneCategory, sceneLabel, sceneNote} from '../ui/capture-presentation.mjs'
 import {checklistHint, guidedSteps, lifeSocialGuidance} from '../ui/capture-guide.mjs'
 
 test('old cached scene reports use verified names without requiring recapture',()=>{
@@ -9,6 +9,13 @@ test('old cached scene reports use verified names without requiring recapture',(
   assert.equal(sceneLabel(6,{}),'夜间场景（资源未命名）')
   assert.ok(sceneNote(6).includes('当前世界配置未列出'))
   assert.equal(sceneLabel(987654,{}),'未命名场景 987654')
+})
+
+test('identical skill IDs in different professions use their own resource text',()=>{
+  assert.equal(lifeSkillLabel(1,30100),'料理精通')
+  assert.equal(lifeSkillLabel(2,30100),'幸运')
+  assert.equal(lifeSkillLabel(6,36100),'技能 36100')
+  assert.equal(lifeSkillLabel(987,30100),'技能 30100')
 })
 test('exploration scenes never enter the furniture table, including legacy reports',()=>{
   const rows=[{scene_id:1,garden_furniture:0},{scene_id:1002,garden_furniture:0},{scene_id:9999,garden_furniture:500}]
@@ -43,6 +50,14 @@ test('response-only legacy reports request reanalysis rather than inventing clas
   const social=steps.find(step=>step.id==='social')
   assert.equal(social.status,'legacy');assert.ok(social.text.includes('重新解析'))
   assert.ok(social.text.includes('无需先回游戏'))
+})
+
+test('legacy nebula checklist requests reanalysis while current saved records do not ask for activation',()=>{
+  const other=guidedSteps({items:[]}).find(s=>s.id==='other')
+  assert.equal(other.status,'legacy');assert.ok(other.text.includes('重新解析'))
+  const items=['nebula','mail','achieve','manual','archive'].map(id=>({id,state:'collected',count:1}))
+  const saved=guidedSteps({items}).find(s=>s.id==='other')
+  assert.equal(saved.status,'received');assert.ok(saved.text.includes('无需重复浏览'))
 })
 test('life and social detail guidance respects successful empty lists and incomplete categories',()=>{
   const section=(ids)=>({expected_types:ids,types:ids.map(type_id=>({type_id,state:'empty'}))})

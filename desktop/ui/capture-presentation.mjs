@@ -1,4 +1,9 @@
 import catalog from '../capturelib/scene_catalog.json' with { type: 'json' }
+import skillCatalog from '../capturelib/life_skill_catalog.json' with { type: 'json' }
+
+export function lifeSkillLabel(kind, id) {
+  return skillCatalog.skills[String(kind)]?.[String(id)] || `技能 ${id}`
+}
 
 export function sceneLabel(id, row) {
   if (Number(id) === 6) return '夜间场景（资源未命名）'

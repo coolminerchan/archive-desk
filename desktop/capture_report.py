@@ -26,6 +26,7 @@ from capture_version import VERSION
 from packet_context import REQUESTS as CONTEXT_REQUESTS, FILENAME as CONTEXT_FILE, read_contexts
 from life_social import LifeSocial, quality_items as life_social_quality, render_report as render_life_social
 from world_activities import render_report as render_world_activities
+from nebula_tree import render_report as render_nebula_tree
 
 MAX_FILE = 512 << 20
 MAX_MESSAGE = 32 << 20
@@ -399,6 +400,9 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
     activities = exploration.activities.summary(account_uid, result.get('account_uid'))
     (output / 'world-activities.json').write_text(json.dumps(activities, ensure_ascii=False), encoding='utf-8')
     (output / 'world-activities.txt').write_text(render_world_activities(activities), encoding='utf-8')
+    nebula = exploration.nebula.summary(account_uid, result.get('account_uid'))
+    (output / 'nebula-tree.json').write_text(json.dumps(nebula, ensure_ascii=False), encoding='utf-8')
+    (output / 'nebula-tree.txt').write_text(render_nebula_tree(nebula), encoding='utf-8')
     (output / 'dungeons.json').write_text(json.dumps(result['dungeons'], ensure_ascii=False), encoding='utf-8')
     (output / 'dungeons.txt').write_text(dungeon_module.render_report(result['dungeons']), encoding='utf-8')
     if purpose != 'gardens':
@@ -410,6 +414,7 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
         with ZipFile(result['account_zip'], 'w', ZIP_DEFLATED) as archive:
             for file in [output / 'exploration.json', output / 'exploration.txt', output / 'dungeons.json', output / 'dungeons.txt',
                          output / 'world-activities.json', output / 'world-activities.txt',
+                         output / 'nebula-tree.json', output / 'nebula-tree.txt',
                          output / 'life-social.json', output / 'life-social.txt',
                          *([output / CONTEXT_FILE] if (output / CONTEXT_FILE).is_file() else []),
                          *sorted(f for f in (output / 'raw').glob('*.bin') if f.stem in included_stems),

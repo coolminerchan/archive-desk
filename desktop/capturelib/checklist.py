@@ -34,6 +34,7 @@ GROUPS = [
     ('gacha_records','抽卡记录',['GachaRecordRsp'],'打开抽卡历史并翻页'),
     ('achieve','成就',['GetAchieveGroupListRsp','GetAchieveOneGroupRsp'],'打开成就各分组'),
     ('manual','图鉴',['ManualListRsp','GetCharacterAchievementListRsp'],'打开图鉴界面'),
+    ('nebula','星云树激活与任务',['AbilityBadgeListRsp'],'打开星云树页面，切换可见分区等待加载；不用激活节点或领取奖励。已有账号包可先重新解析。'),
     ('explore','探索与收集',['GetCollectItemIdsRsp','GetCollectMoonInfoRsp','ExploreInitRsp'],'打开探索、收藏界面'),
     ('map_progress','各地图探索点',['SceneProcessListRsp'],'打开世界地图与地区探索进度，逐一切换已解锁地区'),
     ('map_collections','地图收集记录',['GetCollectItemIdsRsp','CollectingRsp','CollectionRewardRsp'],'打开地图收集与收藏页面；增量记录不能代替完整列表'),
@@ -100,6 +101,8 @@ def observe(name, body, counts, empty):
                 if present:counts['@'+key]+=1
     if name in ('DungeonViewRsp','DungeonEnterRsp','DungeonRepeatEnterRsp','DungeonFinishRsp') and body.get('dungeon_data',{}).get('dungeon_id'):
         counts['@dungeon_details']+=1
+    if name == 'AbilityBadgeListRsp' and not any(body.get(key) for key in ('ability_badge_pages','ability_badge_achieves','ability_badge_reward_achieve_ids')):
+        empty[name]+=1
     list_fields={'GetWeaponRsp':'weapons','GetArmorRsp':'armors','GetPosterRsp':'posters','GetPetRsp':'pets','GetMailsRsp':'mails','GachaListRsp':'gachas','GachaRecordRsp':'records','FriendRsp':'info','FriendListRsp':'info'}
     key=list_fields.get(name)
     if key and not body.get(key):empty[name]+=1

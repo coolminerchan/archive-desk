@@ -5,9 +5,10 @@ from collections import defaultdict
 from pathlib import Path
 from scene_metadata import scene_metadata
 from world_activities import WorldActivities, PACKETS as ACTIVITY_PACKETS
+from nebula_tree import NebulaTree, PACKETS as NEBULA_PACKETS
 
 PACKETS = {"SceneProcessListRsp", "GetCollectItemIdsRsp", "SceneDataNotice",
-           "CollectingRsp", "CollectionRewardRsp", "GetCollectMoonInfoRsp"} | ACTIVITY_PACKETS
+           "CollectingRsp", "CollectionRewardRsp", "GetCollectMoonInfoRsp"} | ACTIVITY_PACKETS | NEBULA_PACKETS
 
 
 def is_garden_scene(scene):
@@ -38,6 +39,7 @@ class Exploration:
         self.evidence = []
         self.scenes = set()
         self.activities = WorldActivities(proto)
+        self.nebula = NebulaTree(proto)
 
     def add(self, name, body, source):
         if name not in PACKETS:
@@ -47,6 +49,9 @@ class Exploration:
         if hasattr(data, "status") and data.status not in allowed:
             return
         self.activities.add(name, body, source)
+        self.nebula.add(name, body, source)
+        if name in NEBULA_PACKETS:
+            return
         if name == 'SceneDataNotice' and is_garden_scene(data.data):
             return
         self.evidence.append(dict(source, message=name))
@@ -150,6 +155,7 @@ class Exploration:
                 "summary": "已生成探索证据报告；未知不当0，总量未验证，非全图完整快照。",
                 "database_imported": False, "unknown_ids": sorted(self.unknown),
                 "activities": self.activities.summary(player_uids[0] if not ambiguous else None, public_uid, compact=True),
+                "nebula_tree": self.nebula.summary(player_uids[0] if not ambiguous else None, public_uid, compact=True),
                 "evidence": self.evidence, "maps": maps}
 
 

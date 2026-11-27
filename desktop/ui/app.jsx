@@ -12,7 +12,7 @@ const ROLE = new URLSearchParams(location.search).get('role') || 'server'
 const ROLE_INFO = {
   server: { name: '服务端管理', icon: Server, tabs: [['overview', '运行概览', Activity], ['releases', '资源发布', Layers], ['storage', '账号与存档', Archive]] },
   client: { name: '游戏启动器', icon: Box, tabs: [['overview', '连接与启动', Play], ['settings', '客户端设置', FolderOpen]] },
-  capture: { name: '账号采集工具', icon: Radio, tabs: [['overview', '采集与核对', ScanLine], ['gardens', '装修采集', Library], ['scenes', '本人场景', Layers], ['exploration', '探索证据', Activity], ['settings', '工具设置', FolderOpen]] }
+  capture: { name: '账号采集工具', icon: Radio, tabs: [['overview', '采集与核对', ScanLine], ['progress', '星云树与生活', Library], ['exploration', '水晶与景点', Activity], ['gardens', '装修采集', Library], ['scenes', '本人场景', Layers], ['settings', '工具设置', FolderOpen]] }
 }
 
 function Button({ icon: Icon, kind = 'secondary', children, ...props }) {
@@ -40,6 +40,7 @@ function App() {
   const clientArt = artwork[selectedArt]?.image ? artwork[selectedArt] : artwork.train
   const [state, updateState] = useState({})
   const [tab, setTab] = useState('overview')
+  useEffect(() => { window.scrollTo({ top: 0 }) }, [tab])
   useEffect(() => {
     if (ROLE === 'capture' && new URLSearchParams(location.search).get('autoCapture') === '1' && state.captureResumePurpose === 'gardens') setTab('gardens')
   }, [state.captureResumePurpose])
@@ -248,8 +249,8 @@ function App() {
     </>
   }
 
-  const captureViews = Object.fromEntries(['overview', 'gardens', 'scenes', 'exploration', 'settings'].map(key =>
-    [key, <CapturePage key="capture" tab={key} state={state} busy={busy} act={act} />]))
+  const captureViews = Object.fromEntries(['overview', 'progress', 'gardens', 'scenes', 'exploration', 'settings'].map(key =>
+    [key, <CapturePage key="capture" tab={key} state={state} busy={busy} act={act} onNavigate={setTab} />]))
 
   const panel = { server: serverViews, client: clientViews, capture: captureViews }[ROLE][tab]
   return <div className={"desktop role-" + ROLE} style={{ '--ambient-art': `url("${roleArt[ROLE].blur}")` }}>

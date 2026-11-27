@@ -286,5 +286,36 @@ nav button[aria-current] { background:linear-gradient(100deg,#b5a5ed27,#b5a5ed0b
 .received .step-avatar b { background:#315b4c; color:#bde9d3 }
 .capture-step { padding:9px 0 }
 .capture-step p { padding-left:39px }
+.record-shortcuts { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:0 0 18px }
+.record-shortcuts button { display:flex; align-items:center; gap:10px; min-width:0; padding:13px 11px; border:1px solid #d5d4ff22; border-radius:11px; background:linear-gradient(125deg,#2c3044,#1e2835); color:#e5e3ef; text-align:left; cursor:pointer }
+.record-shortcuts button:hover { border-color:#e1cfa478; background:#34384b }
+.record-shortcuts button:focus-visible { outline:2px solid #efd098; outline-offset:3px }
+.record-shortcuts img { width:36px; height:36px; border-radius:50%; border:1px solid #e2d5ee4d; flex-shrink:0 }
+.record-shortcuts span { min-width:0; flex:1 }
+.record-shortcuts strong { display:block; font-size:13px; font-weight:600 }
+.record-shortcuts small { display:block; font-size:10px; line-height:1.6; color:#afb6c8; margin-top:4px }
+.record-shortcuts b { font-size:16px; font-weight:400; color:#dfcb9f }
+.record-badge { border:1px solid #8fc6ad55; background:#385a4a55; color:#bad7c8; border-radius:20px; padding:5px 9px; font-size:11px; flex-shrink:0 }
+.nebula-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0 18px }
+.nebula-metrics > div { border:1px solid #c8d4e21c; border-radius:9px; padding:13px 16px; background:#18263188 }
+.nebula-metrics span { display:block; font-size:11px; color:#a6b7c6 }
+.nebula-metrics strong { display:block; font-size:26px; font-weight:600; color:#f0dbaf; margin-top:4px }
+[data-testid="nebula-records"] .card-head { justify-content:space-between }
+.record-ids { max-width:420px; line-height:1.9; overflow-wrap:anywhere }
+.map-capture-help { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:18px 0 }
+.map-capture-help > div { padding:16px 18px; background:linear-gradient(120deg,#353944bb,#203139cc); border:1px solid #d9d6ff24; border-radius:12px }
+.map-capture-help strong { font-size:13px; color:#f0ddb8 }
+.map-capture-help p { color:#bcc5d3; font-size:12px; line-height:1.9; margin-bottom:0 }
+.life-skill-details { margin-top:18px }
+.life-skill-details h3 { font-size:14px; margin-bottom:8px }
+.life-skill-details > details { margin-top:8px; border:1px solid #d5d4ff20; border-radius:8px; padding:12px 14px; background:#141c2a55 }
+.life-skill-details summary { cursor:pointer; font-size:12px; color:#dddde8 }
+.life-skill-details summary span { float:right; color:#a5b4bd; font-size:11px }
+.skill-chips { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:8px; margin-top:13px }
+.skill-chips > div { display:flex; gap:8px; align-items:center; justify-content:space-between; padding:12px; background:#27383f; border:1px solid #a8cbbb22; border-radius:7px }
+.skill-chips span { font-size:11px; color:#b3c2c9 }
+.skill-chips strong { font-size:14px; font-weight:550; color:#efd3a0 }
+@media(max-width:1100px) { .record-shortcuts { grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media(max-width:720px) { .map-capture-help { grid-template-columns:1fr } }
 @media (max-height:800px) { .sidebar-memory { height:175px } }
 @media (max-width:1100px) { .art-hero-copy { width:72%; padding:25px } .art-hero h1 { font-size:28px } .game-stage { height:395px } .game-stage-copy { max-width:59%; padding-left:25px } .game-stage-copy h1 { font-size:38px } .companion-portraits > span { display:none } .art-gallery button img { width:65px } .art-gallery { gap:8px } .capture-art-hero .art-hero-copy { width:76% } .capture-art-hero .actions { gap:6px } .capture-art-hero h1 { font-size:26px } .capture-art-hero .primary { font-size:12px; padding:0 14px } .world-status-strip { gap:10px; padding:13px } }
