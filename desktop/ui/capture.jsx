@@ -7,6 +7,7 @@ import { checklistHint, guidedSteps } from './capture-guide.mjs'
 import CaptureRecords from './capture-records.jsx'
 import CaptureSettings from './capture-settings.jsx'
 import GardenCapturePage from './gardens.jsx'
+import CaptureProcess from './capture-process.jsx'
 
 export default function CapturePage(props) {
   const other=props.state.recording && props.state.capturePurpose==='gardens'
@@ -41,7 +42,6 @@ function BackupHome({state,busy,act,onNavigate,other}) {
           <Action name="analyze" act={act} busy={busy} disabled={locked} icon={FolderOpen}>打开已有备份</Action></div>
       </div>
     </section>
-    <ol className="c-journey" aria-label="备份步骤">{['开始备份','在游戏中浏览','退出后保存'].map((label,i)=><li className={stage.stage===i?'current':''} key={label}><span>{i+1}</span>{label}</li>)}</ol>
     {active&&<p className="c-live-footnote">原始记录占用 {typeof state.captureBytes==='number'?`${(state.captureBytes/1048576).toFixed(1)} MiB`:'等待统计'} · 本轮最多 30 分钟或 448 MiB</p>}
     {other && <Note>家园装修正在采集。请先在「家园装修」结束当前任务。</Note>}
     {state.captureError && <div className="notice error" role="alert">{state.captureError}</div>}
@@ -51,6 +51,7 @@ function BackupHome({state,busy,act,onNavigate,other}) {
       <div className="c-next-copy"><img src={guidePortraits[next?.id||'login']} alt="" /><div><h3>{state.recording==='recording'?(next?.title||'可以结束浏览并保存'):stage.title}</h3><p>{state.recording==='recording'?(next?.text||'退出游戏，或点击上方「停止并保存」。'):state.captureFlow?.hint||stage.hint}</p></div></div>
       <Disclosure title="查看完整浏览指引"><div className="capture-steps">{steps.map((s,i)=><details className={`capture-step ${s.status}`} key={s.id}><summary><span className="step-avatar"><img src={guidePortraits[s.id]} alt="" /><b>{s.status==='received'?'✓':i+1}</b></span><strong>{s.title}</strong><small>{s.statusLabel}</small></summary><p>{s.text}</p></details>)}</div><p>实时记录可能延迟，无需等每项变色才继续操作。</p></Disclosure>
     </Panel>}
+    <CaptureProcess />
     {!active && report && <Panel title="最近查看的账号" aside={jump('records')} className="c-recent" data-testid="backup-result">
       <div className="c-account-line"><img src={guidePortraits.login} alt="" /><div><h3>{identity.name}</h3><p>{identity.uid?`UID ${identity.uid}`:'登录 UID 未返回'}{identity.level!=null?` · 等级 ${identity.level}`:''}</p></div><span className="c-tag">已读取</span></div>
       <div className="c-equipment-summary">{['weapon','armor','poster'].map(kind=><div key={kind}><span>{{weapon:'武器',armor:'护甲',poster:'海报'}[kind]}</span><strong>{report.equipment?.[kind]?.observed??'—'}</strong><small>件已保留</small></div>)}</div>
@@ -59,13 +60,11 @@ function BackupHome({state,busy,act,onNavigate,other}) {
       {report.accounts>1&&<Note warning>这份记录包含多个账号。请分别采集后再保存账号包，避免混淆归属。</Note>}
       {hasIssue && <Note warning>这份记录有需要核对的采集信息。<button type="button" className="c-text-button" onClick={()=>onNavigate('settings')}>查看诊断</button></Note>}
     </Panel>}
-    {!active && !report && <div className="c-start-help"><h2>照常玩游戏，就能开始留存</h2><p>进入游戏后，浏览背包、装备、地图与生活职业。无需为了备份升级、重做挑战或领取奖励。</p></div>}
     {observation && <Disclosure title={`核对采集内容${summary.remaining.length?` · ${summary.remaining.length} 项可补充`:''}`} data-testid="capture-checklist-disclosure">
       <div className="c-filter" role="group" aria-label="清单范围">{[['remaining','需要核对'],['all','全部资料'],['optional','可选补充']].map(([key,label])=><button type="button" key={key} aria-pressed={filter===key} onClick={()=>setFilter(key)}>{label}</button>)}</div>
       {filtered.length ? <div className="c-checklist">{filtered.map(item=><div key={item.id}><div><strong>{item.label}</strong><span className={`c-item-state ${isReceived(item)?'ok':''}`}>{receivedLabel(item.state)}</span></div><p>{checklistHint(item)}</p></div>)}</div> : <p className="c-muted">此分类暂无需要补充的项目。已有记录不代表全账号所有内容均已采齐。</p>}
       <div className="actions"><Action name="analyze" args={{recent:true}} act={act} busy={busy} disabled={locked||!state.capture}>重新核对本次采集</Action></div>
     </Disclosure>}
-    <Disclosure title="第一次使用？"><div className="c-first-use"><p>1. 点「开始备份」，按系统提示允许权限，等待游戏打开。</p><p>2. 登录自己的账号。游戏已打开时，请返回登录界面重新登录一次。</p><p>3. 浏览想保存的页面和地区，等加载完再切换；结束后退出游戏，或点「停止并保存」。</p><p>备份默认保存在「文档 → 游戏账号备份」。已有账号包、PCAP 或 PCAPNG 可直接打开；抽卡历史不用操作。</p></div></Disclosure>
     <div className="c-home-bottom"><span>每轮独立保存，原始记录保留。</span><button type="button" className="c-text-button" onClick={()=>onNavigate('settings')}>模拟器或手动连接 → 设置</button></div>
   </div>
 }

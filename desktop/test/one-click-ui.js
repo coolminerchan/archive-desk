@@ -25,7 +25,7 @@
   check(document.querySelector('[data-testid="map-records"]'),'Map records missing')
   if(f.view==='dungeons'){document.getElementById('record-tab-dungeons').click();await wait(150)}
   else if(f.view==='quality'){await nav('设置');document.querySelector('[data-testid="capture-diagnostics"]').open=true}
-  else if(['overview','guide'].includes(f.view)){await nav('备份账号');if(f.view==='guide')[...document.querySelectorAll('details')].find(d=>d.querySelector('summary')?.textContent.includes('第一次使用')).open=true}
+  else if(['overview','guide'].includes(f.view)){await nav('备份账号');if(f.view==='guide')document.querySelector('[data-testid="capture-process"]').scrollIntoView({block:'start'})}
   check(document.documentElement.scrollWidth<=innerWidth+2,'Horizontal overflow');check(!document.querySelector('.notice.error'),'UI error')
   check(!/上游|Lolo|Frida|miaomiao|Electron|React|Vite|OverField-Backup/.test(document.body.innerText),'Engineering names in UI')
   await wait(200);window.chrome.webview.postMessage({kind:'test-done',success:true})

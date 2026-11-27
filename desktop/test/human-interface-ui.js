@@ -26,7 +26,8 @@
     check(document.querySelector('[data-action="capture-one-click"]:not(:disabled)'),'Start action missing')
     check(!document.querySelector('[data-testid="backup-result"]'),'Idle invents an account result')
     check(!visible().includes('尚缺响应')&&!visible().includes('未知')&&!visible().includes('TCP'),'Idle screen looks like failed capture')
-    check(document.querySelector('.content').getBoundingClientRect().height<innerHeight+120,'Idle screen too long')
+    const process=document.querySelector('[data-testid="capture-process"]')
+    check(process?.checkVisibility()&&!process.closest('details'),'Complete process should be visible without expanding help')
   }else if(f.mode==='legacy'){
     await until(()=>document.querySelector('[data-testid="backup-result"]'),'legacy account')
     await nav('查看资料');await tab('progress')

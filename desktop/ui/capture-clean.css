@@ -28,6 +28,19 @@
 .role-capture .notice { font-size:13px; line-height:1.8; padding:15px 18px; margin-bottom:18px }
 .role-capture .toast { font-size:13px }
 .c-home,.c-gardens { max-width:1030px; margin:auto }
+.c-home > .c-backup-hero { margin-bottom:24px }
+.c-process-steps { list-style:none; margin:0; padding:0 }
+.c-process-steps > li { display:flex; align-items:flex-start; gap:14px; padding:16px 0; border-bottom:1px solid #313d4d }
+.c-process-steps > li:first-child { padding-top:0 }
+.c-process-steps > li:last-child { border-bottom:0; padding-bottom:0 }
+.c-process-steps > li > span { display:grid; place-items:center; width:26px; height:26px; flex-shrink:0; border-radius:50%; background:#3d3b32; color:#eddaa9; font-size:12px }
+.c-process-steps > li > div { min-width:0; flex:1 }
+.c-process-steps h3 { line-height:26px }
+.c-process-steps h3 + p { margin-top:5px }
+.c-process-browse { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; margin-top:18px }
+.c-process-browse strong { font-size:13px; color:#e4dcc8; font-weight:550 }
+.c-process-browse p { margin-top:5px; font-size:12px; line-height:1.85 }
+.c-process-note { margin-top:20px; padding-top:16px; border-top:1px solid #313d4d; font-size:12px!important }
 .c-page-title { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:26px }
 .c-page-title h1 { font-size:26px; font-weight:650; letter-spacing:.3px }
 .c-page-title p { margin-top:8px; font-size:13px; color:#a7b2c2; line-height:1.7 }
