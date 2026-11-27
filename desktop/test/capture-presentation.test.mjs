@@ -1,0 +1,22 @@
+import {test} from 'node:test'
+import assert from 'node:assert/strict'
+import {equipmentLabel, qualityLabel, sceneLabel} from '../ui/capture-presentation.mjs'
+
+test('old cached scene reports use verified names without requiring recapture',()=>{
+  assert.equal(sceneLabel(1,{}),'樱庭世界·昼')
+  assert.equal(sceneLabel(1002,{}),'鸳鸯锅')
+  assert.equal(sceneLabel(6,{}),'未命名场景 6')
+  assert.equal(sceneLabel(987654,{}),'未命名场景 987654')
+})
+test('additional preserved equipment does not make a matching list appear unresolved',()=>{
+  assert.equal(equipmentLabel({quantity_matches:true,matches:false,other_only:33,reported:[433]}),'列表数量吻合')
+  assert.equal(equipmentLabel({list_matches:false,reported:[10]}),'列表数量或实例未通过校验')
+  assert.equal(equipmentLabel({list_matches:true,quantity_matches:false,reported:[10]}),'列表数量一致，采集质量另列')
+  assert.equal(equipmentLabel({reported:[]}),'未收到装备列表')
+})
+test('quality labels identify actual evidence gaps without turning missing metadata into damage',()=>{
+  assert.equal(qualityLabel({quality:{integrity_known:true},gaps:0,decode_errors:0,unknown:0,tail_directions:0}),'未见异常')
+  assert.equal(qualityLabel({quality:{integrity_known:false}}),'旧包未记录检测信息')
+  assert.equal(qualityLabel({quality:{integrity_known:true},tail_directions:1}),'未解析尾数据 1 个方向')
+  assert.equal(qualityLabel({quality:{integrity_known:true,tcp_gap_directions:2},gaps:0}),'TCP 缺口 2 个方向')
+})

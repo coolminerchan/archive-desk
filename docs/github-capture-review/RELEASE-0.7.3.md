@@ -6,6 +6,7 @@ Added scene names and clearer world-progress evidence.
 - Scenic spots, timed challenges, world challenges, and the account's own challenge times are reported separately.
 - Activity observations are retained in world-activities.json and the original protocol files. Repeated global histories are counted by distinct ID without assigning every entry to its container scene.
 - Unlock flags do not substitute for scenic completion. A timed challenge's Start state or a recorded time alone does not become an “unfinished” verdict.
+- Older cached reports can display verified scene names without a new capture. Equipment and capture-quality messages identify the actual missing information instead of a generic review warning.
 
 This release updates capture and inspection. Server-side restoration still needs to return the captured completion fields; this collector does not modify game saves.
 

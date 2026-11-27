@@ -5,6 +5,7 @@ import { artwork, portraits, ArtHero, ArtHeading } from './artwork.jsx'
 import GardenCapturePage from './gardens.jsx'
 import OwnScenesPage from './own-scenes.jsx'
 import LifeSocialRecords from './life-social.jsx'
+import { equipmentLabel, qualityLabel, sceneLabel } from './capture-presentation.mjs'
 
 const channels = [['auto', '自动 / 通用 PC'], ['cn-pc', '国服 PC · TapTap / B站'], ['steam', 'Steam · 动态端口'], ['emulator', '安卓渠道 · 模拟器'], ['manual', '手动连接范围']]
 const states = { collected: '已见响应', empty: '已收到空列表', partial: '有数据，待补齐', missing: '尚缺响应', waiting: '等待响应', unknown: '暂无法判断' }
@@ -129,7 +130,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
     {exploration ? <>
       <div className="capture-guide"><strong>{exploration.summary}</strong><p>资源目录 {exploration.resource_version} · 目录待匹配 {exploration.unknown_ids?.length || 0} 项（数据已保留） · {exploration.attribution === 'single_observed_uid' ? '已关联单个账号' : exploration.attribution === 'single_observed_player_id' ? '已关联单个角色，登录 UID 未返回' : '缺少唯一账号归属'}</p></div>
       <div className="exploration-table"><table><thead><tr><th>场景</th><th>观测范围</th><th>探索点</th><th>收集物观测</th><th>水晶观测 / 声明总量</th><th>已开宝箱</th><th>月亮 / 情绪月亮</th></tr></thead><tbody>
-        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{row.scene_name || '名称待核对'}<small>场景 {id}</small></td>
+        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{sceneLabel(id, row)}<small>场景 {id}</small></td>
           <td>{({ not_captured: '未采到', scene_snapshot_partial: '部分场景快照', observed_evidence: '已见相关响应' })[row.collection_coverage]}</td>
           <td>{row.points.collected ?? '未知'} / {row.points.total ?? '未知'}</td>
           <td>{row.items.collected ?? '未知'}</td>
@@ -168,8 +169,8 @@ function AccountCapturePage({ state, tab, busy, act }) {
     </section>
     <div className="capture-metrics">
       <div><span>成功响应</span><strong>{state.recording ? progress?.readable ? '已观测' : '等待落盘' : report?.successful ?? '—'}</strong><small>{state.recording ? '结束后进行最终核对' : `${report?.packets ?? '—'} 个协议包`}</small></div>
-      <div><span>已观测分类</span><strong>{checklist.length ? received + ' / ' + checklist.length : '—'}</strong><small>{pending ? `${pending} 项需核对 · ` : ''}抽卡历史不计入</small></div>
-      <div><span>{state.recording ? '网络记录' : '采集质量'}</span><strong>{state.recording ? progress?.livePackets ?? '等待计数' : report ? !quality?.integrity_known ? '待核实' : report.decode_errors || report.gaps || report.unknown || report.tail_directions ? '需核对' : '未见异常' : '—'}</strong><small>{state.recording ? size(state.captureBytes) : '仅限本次已记录数据，分项见下方'}</small></div>
+      <div><span>已观测分类</span><strong>{checklist.length ? received + ' / ' + checklist.length : '—'}</strong><small>{pending ? `${pending} 项已有部分记录 · ` : ''}抽卡历史不计入</small></div>
+      <div><span>{state.recording ? '网络记录' : '采集质量'}</span><strong>{state.recording ? progress?.livePackets ?? '等待计数' : report ? qualityLabel(report) : '—'}</strong><small>{state.recording ? size(state.captureBytes) : '仅限本次已记录数据，分项见下方'}</small></div>
       <div><span>账号归属</span><strong>{account ? publicUid ? 'UID ' + publicUid : '登录 UID 未返回' : observation ? (observation.accounts > 1 ? '多个账号' : '未确认') : '—'}</strong><small>{account ? `${account.player_name || '未返回昵称'} · 等级 ${account.level ?? '未知'}` : '以成功主数据响应为准'}</small></div>
     </div>
     {state.captureError && <div className="notice error" role="alert">{state.captureError}</div>}
@@ -257,7 +258,7 @@ function Equipment({ report }) {
   return <div className="audit">{['weapon', 'armor', 'poster'].filter(kind => report.equipment[kind]).map(kind => { const row = report.equipment[kind]; return <div className="audit-row" key={kind}>
     <div><strong>{{weapon: '武器', armor: '护甲', poster: '装备海报'}[kind]}</strong><p>列表 {row.snapshot} 件 · 全部来源 {row.observed} 件</p>
       <p>列表响应 {row.pages} 次 · 列表外另见 {row.other_only} 件{row.without_id > 0 && ` · 缺实例 ID ${row.without_id} 件`}</p></div>
-    <div className={'audit-count ' + (row.quantity_matches || row.matches ? 'on' : '')}>{row.quantity_matches || row.matches ? '列表数量吻合' : row.list_complete && row.other_only ? `另有 ${row.other_only} 件已保留` : row.reported.length ? '列表需核对' : '缺列表'}
+    <div className={'audit-count ' + (row.quantity_matches || row.matches ? 'on' : '')}>{equipmentLabel(row)}
       <span>报送 {row.reported.length ? row.reported.join(' / ') : '—'}</span></div>
   </div>})}<p className="audit-note">穿戴响应 {report.sources.equipped} 条 · 背包推送 {report.sources.pack} 条 · 解码异常 {report.decode_errors} 条</p></div>
 }
