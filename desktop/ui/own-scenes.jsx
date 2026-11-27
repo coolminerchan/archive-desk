@@ -19,7 +19,7 @@ export default function OwnScenesPage({ state, busy, act }) {
     {data?.identity && <div className="capture-guide"><strong>{data.identity.uid ? `${data.identity_source === 'archive_metadata' ? '归档 UID' : '登录 UID'} ${data.identity.uid}` : '登录 UID 未记录'}</strong>
       <p>{data.identity_source === 'archive_metadata' ? '归属来自包内索引，未重新验证登录。' : '归属来自本次账号主数据。'}场景 {data.scene_count} 个 · 独立快照 {data.snapshot_count} 份。</p></div>}
     {rows.length ? <div className="exploration-table"><table><thead><tr><th>场景</th><th>独立快照</th><th>观测家具</th><th>摆放角色</th><th>房间装饰</th><th>载具 / 椅子</th><th>宝箱</th></tr></thead><tbody>
-      {rows.map(row => <tr key={row.scene_id}><td>{row.scene_id}</td><td>{row.snapshots}</td><td>{row.garden_furniture}</td><td>{row.placed_characters}</td><td>{row.room_decor}</td><td>{row.vehicles} / {row.chairs}</td><td>{row.treasure_boxes}</td></tr>)}
+      {rows.map(row => <tr key={row.scene_id}><td>{row.scene_name || '名称待核对'}<small>场景 {row.scene_id}</small></td><td>{row.snapshots}</td><td>{row.garden_furniture}</td><td>{row.placed_characters}</td><td>{row.room_decor}</td><td>{row.vehicles} / {row.chairs}</td><td>{row.treasure_boxes}</td></tr>)}
     </tbody></table></div> : <div className="empty"><Layers size={18} /><span>尚无可确认属于本人频道的场景。请先采集账号主数据，再进入自己的场景；公共频道不会猜作本人数据。</span></div>}
     {state.captureError && <div className="notice error">{state.captureError}</div>}
   </>

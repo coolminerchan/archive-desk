@@ -25,6 +25,7 @@ from own_scenes import OwnScenes
 from capture_version import VERSION
 from packet_context import REQUESTS as CONTEXT_REQUESTS, FILENAME as CONTEXT_FILE, read_contexts
 from life_social import LifeSocial, quality_items as life_social_quality, render_report as render_life_social
+from world_activities import render_report as render_world_activities
 
 MAX_FILE = 512 << 20
 MAX_MESSAGE = 32 << 20
@@ -395,6 +396,9 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
     (output / 'exploration.json').write_text(json.dumps(result['exploration'], ensure_ascii=False), encoding='utf-8')
     import exploration as exploration_module
     (output / 'exploration.txt').write_text(exploration_module.render_report(result['exploration']), encoding='utf-8')
+    activities = exploration.activities.summary(account_uid, result.get('account_uid'))
+    (output / 'world-activities.json').write_text(json.dumps(activities, ensure_ascii=False), encoding='utf-8')
+    (output / 'world-activities.txt').write_text(render_world_activities(activities), encoding='utf-8')
     (output / 'dungeons.json').write_text(json.dumps(result['dungeons'], ensure_ascii=False), encoding='utf-8')
     (output / 'dungeons.txt').write_text(dungeon_module.render_report(result['dungeons']), encoding='utf-8')
     if purpose != 'gardens':
@@ -405,6 +409,7 @@ def analyze(path, output, toolkit, session_timings=None, purpose='account'):
     if result.get('account_zip'):
         with ZipFile(result['account_zip'], 'w', ZIP_DEFLATED) as archive:
             for file in [output / 'exploration.json', output / 'exploration.txt', output / 'dungeons.json', output / 'dungeons.txt',
+                         output / 'world-activities.json', output / 'world-activities.txt',
                          output / 'life-social.json', output / 'life-social.txt',
                          *([output / CONTEXT_FILE] if (output / CONTEXT_FILE).is_file() else []),
                          *sorted(f for f in (output / 'raw').glob('*.bin') if f.stem in included_stems),

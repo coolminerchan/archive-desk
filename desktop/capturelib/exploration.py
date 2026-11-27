@@ -3,9 +3,11 @@ import hashlib
 import json
 from collections import defaultdict
 from pathlib import Path
+from scene_metadata import scene_metadata
+from world_activities import WorldActivities, PACKETS as ACTIVITY_PACKETS
 
 PACKETS = {"SceneProcessListRsp", "GetCollectItemIdsRsp", "SceneDataNotice",
-           "CollectingRsp", "CollectionRewardRsp", "GetCollectMoonInfoRsp"}
+           "CollectingRsp", "CollectionRewardRsp", "GetCollectMoonInfoRsp"} | ACTIVITY_PACKETS
 
 
 def is_garden_scene(scene):
@@ -35,6 +37,7 @@ class Exploration:
         self.unknown = set()
         self.evidence = []
         self.scenes = set()
+        self.activities = WorldActivities(proto)
 
     def add(self, name, body, source):
         if name not in PACKETS:
@@ -43,6 +46,7 @@ class Exploration:
         allowed = (self.proto.StatusCode_NONE, self.proto.StatusCode_OK) if name.endswith('Notice') else (self.proto.StatusCode_OK,)
         if hasattr(data, "status") and data.status not in allowed:
             return
+        self.activities.add(name, body, source)
         if name == 'SceneDataNotice' and is_garden_scene(data.data):
             return
         self.evidence.append(dict(source, message=name))
@@ -119,6 +123,7 @@ class Exploration:
             boxes = sorted(self.boxes[scene])
             values = sorted(self.points[scene])
             maps[str(scene)] = {
+                **scene_metadata(scene),
                 "collection_coverage": "scene_snapshot_partial" if scene in self.scenes else
                                        "observed_evidence" if self.sources[scene] else "not_captured",
                 "complete": False, "sources": self.sources[scene],
@@ -144,6 +149,7 @@ class Exploration:
                 "report_available": True, "evidence_available": bool(self.evidence),
                 "summary": "已生成探索证据报告；未知不当0，总量未验证，非全图完整快照。",
                 "database_imported": False, "unknown_ids": sorted(self.unknown),
+                "activities": self.activities.summary(player_uids[0] if not ambiguous else None, public_uid, compact=True),
                 "evidence": self.evidence, "maps": maps}
 
 
@@ -155,10 +161,13 @@ def render_report(report):
     for scene, row in report["maps"].items():
         c = row["crystals"]
         count = "未确认/未采到" if c["collected"] is None else str(c["collected"])
-        lines.append(f"地图 {scene}: {row['collection_coverage']}；水晶已观测 {count}；声明总量 {c['total']}；目录ID数 {c['catalog_id_count']}；mismatch={c['mismatch']}")
+        lines.append(f"地图 {scene} · {row.get('scene_name', '名称待核对')}: {row['collection_coverage']}；水晶已观测 {count}；声明总量 {c['total']}；目录ID数 {c['catalog_id_count']}；mismatch={c['mismatch']}")
         def known(value):
             return '未知' if value is None else str(value)
         lines.append(f"  探索点 {known(row['points']['collected'])}/{known(row['points']['total'])}；收集物 {known(row['items']['collected'])}；已开宝箱 {known(row['one_time_boxes']['collected'])}")
         lines.append(f"  月亮已观测ID {row['moons']['collected_ids']}；情绪月亮已互动ID {row['moons']['interacted_emotion_ids']}（无ID不代表完整空列表）")
     lines.append("未知ID: " + str(report["unknown_ids"]))
+    if report.get('activities'):
+        from world_activities import render_report as render_activities
+        lines.append(render_activities(report['activities']))
     return "\n".join(lines) + "\n"

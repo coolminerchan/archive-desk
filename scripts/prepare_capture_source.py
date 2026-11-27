@@ -48,9 +48,9 @@ def prepare(version):
         for path in (ROOT / directory).rglob('*'):
             if path.is_file() and path.suffix in suffixes and '__pycache__' not in path.parts:
                 add(path.relative_to(ROOT))
-    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'test_life_social.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-update-install.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'life-social-ui.js', 'update-ui.js', 'update-in-place-ui.js', 'one-click-ui.js']:
+    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'test_life_social.py', 'test_world_activities.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-update-install.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'world-activities-ui.js', 'life-social-ui.js', 'update-ui.js', 'update-in-place-ui.js', 'one-click-ui.js']:
         add('desktop/test/' + name)
-    for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/capture-life-social-format.md', 'docs/github-capture-review/README.md', f'docs/github-capture-review/RELEASE-{version}.md',
+    for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/capture-life-social-format.md', 'docs/scene-reference.md', 'docs/github-capture-review/README.md', f'docs/github-capture-review/RELEASE-{version}.md',
                  'scripts/bootstrap_capture_build.ps1', 'scripts/prepare_capture_source.py', 'scripts/sign_capture_update.mjs']:
         add(name)
     files['README.md'] = (ROOT / 'docs/github-capture-review/README.md').read_bytes()

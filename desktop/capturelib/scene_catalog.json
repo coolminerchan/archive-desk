@@ -1,0 +1,1565 @@
+{
+  "schema_version": 1,
+  "source": "local CN PC resource tables",
+  "sources": {
+    "Scene.json": "953de91713b3c3e846ef4011631caae94930e2947bc7352b85622d6a6eb73b46",
+    "String.json": "bbd3e02f7b841e4fd3be1dadff772f64391a345f77fcb84789ef787e4cc778d1",
+    "Flag.json": "0f3bf0bc4d856e7e4caee966afe3d1b6e02307bb08e44de5e52f85f90d5273f2",
+    "Scenic.json": "b5701cb101e1aece425a1613980bd41dc07f1d62d139f3a713ea081d47adb3b0",
+    "Challenge.json": "2dce7aa43badf2b88c55e53b13cff86b70c77eb2a0b2c6fcc24a56e81cd5bd34"
+  },
+  "scenes": {
+    "100": {
+      "name": "瓶中小径",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGuide/Scene/SceneGuide.unity",
+      "text_id": 100
+    },
+    "9999": {
+      "name": "罗塔花园广场",
+      "category": "现实世界",
+      "asset": "Assets/Scenes/Home/Scene/Home_Day_001_Modify.unity",
+      "text_id": 9999
+    },
+    "1": {
+      "name": "樱庭世界·昼",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle001/Scene/白天/SceneBattle001_Day.unity",
+      "text_id": 1
+    },
+    "2": {
+      "name": "贝海姆世界·正",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle002/Scene/SceneBattle002_1.unity",
+      "text_id": 2
+    },
+    "3": {
+      "name": "樱庭世界·夜",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle001/Scene/夜晚/SceneBattle001_Night.unity",
+      "text_id": 3
+    },
+    "4": {
+      "name": "贝海姆世界·逆",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle002/Scene/SceneBattle002_2_blue_v2.unity",
+      "text_id": 4
+    },
+    "5": {
+      "name": "谢尔盖蛋糕世界·蜜",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle003/Scene/SceneBattle003_Day.unity",
+      "text_id": 5
+    },
+    "6": {
+      "name": null,
+      "category": "",
+      "asset": "Assets/Scenes/SceneBattle002/Scene/SceneBattle003_V7_night.unity",
+      "text_id": 6
+    },
+    "1000": {
+      "name": "舞台",
+      "category": "神秘空间",
+      "asset": "Assets/Scenes/SceneLiveStage/Scene/SceneLiveStage_MusicFestival.unity",
+      "text_id": 1000
+    },
+    "1001": {
+      "name": "水晶球",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneChristmas/Scene/SceneChristmas.unity",
+      "text_id": 1001
+    },
+    "1002": {
+      "name": "鸳鸯锅",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneHotpot/Scene/SceneHotpot.unity",
+      "text_id": 1002
+    },
+    "1003": {
+      "name": "星愿学园",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneSchool/Scene/SceneSchool_Tod.unity",
+      "text_id": 1003
+    },
+    "2000": {
+      "name": "樱庭世界·昼",
+      "category": "开放空间",
+      "asset": "Assets/Scenes/SceneBattle001/Scene/白天/SceneBattle001_Day1.unity",
+      "text_id": 1
+    },
+    "10000": {
+      "name": "角色训练场",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/PlayerTry/TestRoom.unity",
+      "text_id": 10000
+    },
+    "10001": {
+      "name": "绿荫双桥",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景17/prefab1_17.unity",
+      "text_id": 10001
+    },
+    "10002": {
+      "name": "水上楼阁",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景20/prefab1_20.unity",
+      "text_id": 10002
+    },
+    "10003": {
+      "name": "悬铃树下",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景4/prefab1_4.unity",
+      "text_id": 10003
+    },
+    "10004": {
+      "name": "祭典之路",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景5/prefab1_5.unity",
+      "text_id": 10004
+    },
+    "10005": {
+      "name": "樱花廊道",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景6/prefab1_6.unity",
+      "text_id": 10005
+    },
+    "10006": {
+      "name": "湖心小岛",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景7/prefab1_7.unity",
+      "text_id": 10006
+    },
+    "10007": {
+      "name": "树下浮廊",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景8/prefab1_8.unity",
+      "text_id": 10007
+    },
+    "10008": {
+      "name": "通幽曲桥",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景16/prefab1_16.unity",
+      "text_id": 10008
+    },
+    "10009": {
+      "name": "青松庭院",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_13/test1_13.unity",
+      "text_id": 10009
+    },
+    "10010": {
+      "name": "送月仪式",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_15/test1_15.unity",
+      "text_id": 10010
+    },
+    "10011": {
+      "name": "风荷庭院",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/1_5/1_5.unity",
+      "text_id": 10011
+    },
+    "10012": {
+      "name": "树影长廊",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/K_1_1_test/K_1_1.unity",
+      "text_id": 10012
+    },
+    "10013": {
+      "name": "天光荷影",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/1_1/1_1.unity",
+      "text_id": 10013
+    },
+    "10014": {
+      "name": "清波石台",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景15/prefab1_15.unity",
+      "text_id": 10014
+    },
+    "10015": {
+      "name": "竹桥双树",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_17/test1_17.unity",
+      "text_id": 10015
+    },
+    "10101": {
+      "name": "记录演练",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Thunder.unity",
+      "text_id": 10101
+    },
+    "10102": {
+      "name": "星币回收",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Normal.unity",
+      "text_id": 10102
+    },
+    "10103": {
+      "name": "斩击特训",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Fire.unity",
+      "text_id": 10103
+    },
+    "10104": {
+      "name": "打击特训",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Water.unity",
+      "text_id": 10104
+    },
+    "10105": {
+      "name": "射击特训",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Wind.unity",
+      "text_id": 10105
+    },
+    "10106": {
+      "name": "立场特训",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Darkness.unity",
+      "text_id": 10106
+    },
+    "10201": {
+      "name": "深渊·昏",
+      "category": "深渊",
+      "asset": "Assets/Scenes/SceneGameplay/Abyss/SceneAbyss_01.unity",
+      "text_id": 10201
+    },
+    "10202": {
+      "name": "深渊·圣",
+      "category": "深渊",
+      "asset": "Assets/Scenes/SceneGameplay/Abyss/SceneAbyss_02.unity",
+      "text_id": 10202
+    },
+    "10203": {
+      "name": "深渊·星河",
+      "category": "深渊",
+      "asset": "Assets/Scenes/SceneGameplay/Abyss/SceneAbyss_03.unity",
+      "text_id": 10203
+    },
+    "10204": {
+      "name": "深渊·炼狱",
+      "category": "深渊",
+      "asset": "Assets/Scenes/SceneGameplay/Abyss/SceneAbyss_04.unity",
+      "text_id": 10204
+    },
+    "10301": {
+      "name": "采集岛·樱庭昼",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_01_Sakura_Day/ResourceIsland_01_Sakura_Day.unity",
+      "text_id": 10301
+    },
+    "20001": {
+      "name": "齿轮悬台",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/2_1/2_1.unity",
+      "text_id": 20001
+    },
+    "20002": {
+      "name": "时钟阵列",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/2_2/2_2.unity",
+      "text_id": 20002
+    },
+    "20003": {
+      "name": "齿轮环道",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/2_3/2_3.unity",
+      "text_id": 20003
+    },
+    "20004": {
+      "name": "时空交错",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/2_4/2_4.unity",
+      "text_id": 20004
+    },
+    "20005": {
+      "name": "螺旋枢纽",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/2_5/2_5.unity",
+      "text_id": 20005
+    },
+    "20006": {
+      "name": "轮盘小径",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_1_test/K_2_1_test.unity",
+      "text_id": 20006
+    },
+    "20007": {
+      "name": "回环索道",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_2_test/K_2_2_test.unity",
+      "text_id": 20007
+    },
+    "20008": {
+      "name": "时空枢纽",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_3_test/K_2_3_test.unity",
+      "text_id": 20008
+    },
+    "20009": {
+      "name": "樱花钟庭",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_4_test/K_2_4_test.unity",
+      "text_id": 20009
+    },
+    "20010": {
+      "name": "光轮树径",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_5_test/K_2_5_test.unity",
+      "text_id": 20010
+    },
+    "20011": {
+      "name": "齿轮世界",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_6_test/K_2_6_test.unity",
+      "text_id": 20011
+    },
+    "20012": {
+      "name": "时序环路",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_7_test/K_2_7_test.unity",
+      "text_id": 20012
+    },
+    "20013": {
+      "name": "时间穹顶",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_9_test/K_2_9_test.unity",
+      "text_id": 20013
+    },
+    "20014": {
+      "name": "静谧廊道",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_10_test/K_2_10_test.unity",
+      "text_id": 20014
+    },
+    "20015": {
+      "name": "浮空齿门",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_6/test2_6.unity",
+      "text_id": 20015
+    },
+    "20016": {
+      "name": "浮空环桥",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_7/test2_7.unity",
+      "text_id": 20016
+    },
+    "20017": {
+      "name": "钟塔楼阁",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_8/test2_8.unity",
+      "text_id": 20017
+    },
+    "20018": {
+      "name": "时光悬廊",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_9/test2_9.unity",
+      "text_id": 20018
+    },
+    "20019": {
+      "name": "螺旋阶梯",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景3/prefab2_3.unity",
+      "text_id": 20019
+    },
+    "20020": {
+      "name": "光影花坛",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景4/prefab2_4.unity",
+      "text_id": 20020
+    },
+    "20101": {
+      "name": "高温模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Fire.unity",
+      "text_id": 20101
+    },
+    "20102": {
+      "name": "湿度模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Water.unity",
+      "text_id": 20102
+    },
+    "20103": {
+      "name": "气压模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Wind.unity",
+      "text_id": 20103
+    },
+    "20104": {
+      "name": "光谱模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Light.unity",
+      "text_id": 20104
+    },
+    "20105": {
+      "name": "暗箱模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Darkness.unity",
+      "text_id": 20105
+    },
+    "20106": {
+      "name": "半月试炼",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Normal.unity",
+      "text_id": 20106
+    },
+    "20107": {
+      "name": "满月试炼",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Thunder.unity",
+      "text_id": 20107
+    },
+    "20301": {
+      "name": "采集岛·贝海姆·正",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_02_Clock/ResourceIsland_02_Clock.unity",
+      "text_id": 20301
+    },
+    "30001": {
+      "name": "微光夜苑",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/1_4/1_4.unity",
+      "text_id": 30001
+    },
+    "30002": {
+      "name": "月下悬廊",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景1/prefab1_1.unity",
+      "text_id": 30002
+    },
+    "30003": {
+      "name": "镜波湖畔",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景2/prefab1_2.unity",
+      "text_id": 30003
+    },
+    "30004": {
+      "name": "雾山旧忆",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景3/prefab1_3.unity",
+      "text_id": 30004
+    },
+    "30005": {
+      "name": "她的过去",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景10/prefab1_10.unity",
+      "text_id": 30005
+    },
+    "30006": {
+      "name": "荷影石庭",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景11/prefab1_11.unity",
+      "text_id": 30006
+    },
+    "30007": {
+      "name": "摘月楼台",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景18/prefab1_18.unity",
+      "text_id": 30007
+    },
+    "30008": {
+      "name": "邀约与再会",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/预制场景19/prefab1_19.unity",
+      "text_id": 30008
+    },
+    "30009": {
+      "name": "静夜萍箱",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/K_1_3_test/K_1_3_test.unity",
+      "text_id": 30009
+    },
+    "30010": {
+      "name": "环行中庭",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_16/test1_16.unity",
+      "text_id": 30010
+    },
+    "30011": {
+      "name": "祈祷与救赎",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/K_1_4_test/K_1_4_test.unity",
+      "text_id": 30011
+    },
+    "30012": {
+      "name": "折扇成桥",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_9/test1_9.unity",
+      "text_id": 30012
+    },
+    "30013": {
+      "name": "烟霞庭院",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_10/test1_10.unity",
+      "text_id": 30013
+    },
+    "30014": {
+      "name": "古旧竹台",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_22/test1_22.unity",
+      "text_id": 30014
+    },
+    "30015": {
+      "name": "绿意花圃",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter1/test1_21/test1_21.unity",
+      "text_id": 30015
+    },
+    "30101": {
+      "name": "冲击模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_冲击模拟.unity",
+      "text_id": 30101
+    },
+    "30102": {
+      "name": "重力模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_重力模拟.unity",
+      "text_id": 30102
+    },
+    "30103": {
+      "name": "震动模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_震动模拟.unity",
+      "text_id": 30103
+    },
+    "30301": {
+      "name": "采集岛·樱庭夜",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_01_Sakura_Night/ResourceIsland_01_Sakura_Night.unity",
+      "text_id": 30301
+    },
+    "40001": {
+      "name": "镜中界-[01]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_10/test2_10.unity",
+      "text_id": 40001
+    },
+    "40002": {
+      "name": "镜中界-[02]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_11/test2_11.unity",
+      "text_id": 40002
+    },
+    "40003": {
+      "name": "镜中界-[03]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_12/test2_12.unity",
+      "text_id": 40003
+    },
+    "40004": {
+      "name": "镜中界-[04]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test2_14/test2_14.unity",
+      "text_id": 40004
+    },
+    "40005": {
+      "name": "镜中界-[05]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_3/test3_3.unity",
+      "text_id": 40005
+    },
+    "40006": {
+      "name": "镜中界-[06]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_13/test3_13.unity",
+      "text_id": 40006
+    },
+    "40007": {
+      "name": "镜中界-[07]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_11/test3_11.unity",
+      "text_id": 40007
+    },
+    "40008": {
+      "name": "镜中界-[08]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景6/prefab2_6.unity",
+      "text_id": 40008
+    },
+    "40009": {
+      "name": "镜中界-[09]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景7/prefab2_7.unity",
+      "text_id": 40009
+    },
+    "40010": {
+      "name": "镜中界-[10]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景5/prefab2_5.unity",
+      "text_id": 40010
+    },
+    "40011": {
+      "name": "镜中界-[11]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景12/prefab2_12.unity",
+      "text_id": 40011
+    },
+    "40012": {
+      "name": "镜中界-[12]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景15/prefab2_15.unity",
+      "text_id": 40012
+    },
+    "40013": {
+      "name": "镜中界-[13]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_15/test3_15.unity",
+      "text_id": 40013
+    },
+    "40014": {
+      "name": "镜中界-[14]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_5/test3_5.unity",
+      "text_id": 40014
+    },
+    "40015": {
+      "name": "镜中界-[15]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_8/test3_8.unity",
+      "text_id": 40015
+    },
+    "40016": {
+      "name": "镜中界-[16]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/test3_4/test3_4.unity",
+      "text_id": 40016
+    },
+    "40017": {
+      "name": "镜中界-[17]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_11_test/K_2_11_test.unity",
+      "text_id": 40017
+    },
+    "40018": {
+      "name": "镜中界-[18]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景11/prefab2_11.unity",
+      "text_id": 40018
+    },
+    "40019": {
+      "name": "镜中界-[19]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/预制场景14/prefab2_14.unity",
+      "text_id": 40019
+    },
+    "40020": {
+      "name": "镜中界-[20]",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter2/K_2_13_test/K_2_13_test.unity",
+      "text_id": 40020
+    },
+    "50001": {
+      "name": "巧可浮岛",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_1/3_1.unity",
+      "text_id": 50001
+    },
+    "50002": {
+      "name": "蛋糕小方",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_2/3_2.unity",
+      "text_id": 50002
+    },
+    "50003": {
+      "name": "糖衣宫殿",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_3/3_3.unity",
+      "text_id": 50003
+    },
+    "50004": {
+      "name": "午后彩虹",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_4/3_4.unity",
+      "text_id": 50004
+    },
+    "50005": {
+      "name": "甜甜拱桥",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_5/3_5.unity",
+      "text_id": 50005
+    },
+    "50006": {
+      "name": "焦糖派对",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_8/3_8.unity",
+      "text_id": 50006
+    },
+    "50007": {
+      "name": "熊熊野餐",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_10/3_10.unity",
+      "text_id": 50007
+    },
+    "50008": {
+      "name": "甜蜜广场",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_11/3_11.unity",
+      "text_id": 50008
+    },
+    "50009": {
+      "name": "奶油筒塔",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_12/3_12.unity",
+      "text_id": 50009
+    },
+    "50010": {
+      "name": "巧梦之城",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_13/3_13.unity",
+      "text_id": 50010
+    },
+    "50011": {
+      "name": "夹心小径",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_14/3_14.unity",
+      "text_id": 50011
+    },
+    "50012": {
+      "name": "饼干甜堂",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_15/3_15.unity",
+      "text_id": 50012
+    },
+    "50013": {
+      "name": "蛋糕奇境",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_17/3_17.unity",
+      "text_id": 50013
+    },
+    "50014": {
+      "name": "白夜茶会",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_19/3_19.unity",
+      "text_id": 50014
+    },
+    "50015": {
+      "name": "点心之家",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter3/3_21/3_21.unity",
+      "text_id": 50015
+    },
+    "510001": {
+      "name": "水晶球的预言",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_圣诞/圣诞_1/圣诞_1.unity",
+      "text_id": 510001
+    },
+    "510002": {
+      "name": "水晶球的预言",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_圣诞/圣诞_2/圣诞_2.unity",
+      "text_id": 510002
+    },
+    "510003": {
+      "name": "水晶球的预言",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_圣诞/圣诞_3/圣诞_3.unity",
+      "text_id": 510003
+    },
+    "510004": {
+      "name": "水晶球的预言",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_圣诞/圣诞_4/圣诞_4.unity",
+      "text_id": 510004
+    },
+    "510005": {
+      "name": "水晶球的预言",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_圣诞/圣诞_5/圣诞_5.unity",
+      "text_id": 510005
+    },
+    "520001": {
+      "name": "田园白玉锅",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_1/火锅_1.unity",
+      "text_id": 520001
+    },
+    "520002": {
+      "name": "什锦卧雪",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_2/火锅_2.unity",
+      "text_id": 520002
+    },
+    "520003": {
+      "name": "粤香蒸堂",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_3/火锅_3.unity",
+      "text_id": 520003
+    },
+    "520004": {
+      "name": "菌汤红辣双拼锅",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_4/火锅_4.unity",
+      "text_id": 520004
+    },
+    "520005": {
+      "name": "过桥赏宴",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_5/火锅_5.unity",
+      "text_id": 520005
+    },
+    "520006": {
+      "name": "青蔬宝塔",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_6/火锅_6.unity",
+      "text_id": 520006
+    },
+    "520007": {
+      "name": "福寿小院",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_7/火锅_7.unity",
+      "text_id": 520007
+    },
+    "520008": {
+      "name": "财圆滚滚",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_8/火锅_8.unity",
+      "text_id": 520008
+    },
+    "520009": {
+      "name": "大蒸笼",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_9/火锅_9.unity",
+      "text_id": 520009
+    },
+    "520010": {
+      "name": "红云居",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_火锅/火锅_10/火锅_10.unity",
+      "text_id": 520010
+    },
+    "530001": {
+      "name": "读书角",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_学校/学校_1/学校_1.unity",
+      "text_id": 530001
+    },
+    "530002": {
+      "name": "纸飞机回廊",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_学校/学校_2/学校_2.unity",
+      "text_id": 530002
+    },
+    "530003": {
+      "name": "幽影学园",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Chapter_学校/学校_3/学校_3.unity",
+      "text_id": 530003
+    },
+    "520101": {
+      "name": "暗箱模拟",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement_Dlc_Hotpot/SceneElement_Dlc_Hotpot.unity",
+      "text_id": 520101
+    },
+    "40301": {
+      "name": "采集岛·贝海姆·逆",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_02_Clock_blue/ResourceIsland_02_Clock_Blue.unity",
+      "text_id": 40301
+    },
+    "50301": {
+      "name": "采集岛·蛋糕昼",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_03_Cake_Day/ResourceIsland_03_Cake_Day.unity",
+      "text_id": 50301
+    },
+    "60301": {
+      "name": "采集岛·蛋糕夜",
+      "category": "采集空间",
+      "asset": "Assets/Scenes/SceneGameplay/ResourceIsland/Scene/ResourceIsland_03_Cake_Night/ResourceIsland_03_Cake_Night.unity",
+      "text_id": 60301
+    },
+    "100101": {
+      "name": "菇菇保卫战",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/菇菇联动副本/BattleScene_gugu.unity",
+      "text_id": 100101
+    },
+    "100102": {
+      "name": "幽冥庭院",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/万圣节副本/BattleScene_Halloween.unity",
+      "text_id": 100102
+    },
+    "100103": {
+      "name": "浮樱茶寮",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/樱花祭副本/BattleScene_Sakura_Day.unity",
+      "text_id": 100103
+    },
+    "100104": {
+      "name": "落樱夜桥",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/樱花祭副本/GatheringScene_Sakura_Night.unity",
+      "text_id": 100104
+    },
+    "100105": {
+      "name": "火锅活动",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/火锅副本/BattleScene_Hotpot.unity",
+      "text_id": 100105
+    },
+    "100106": {
+      "name": "雪穹姜饼屋",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/双旦副本/双旦副本.unity",
+      "text_id": 100106
+    },
+    "100107": {
+      "name": "万家灯火",
+      "category": "活动空间",
+      "asset": "Assets/Scenes/SceneGameplay/EventInstance/春节副本/春节副本.unity",
+      "text_id": 100107
+    },
+    "100201": {
+      "name": "超限挑战",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement01_Sakura/Element_Sakura_Light.unity",
+      "text_id": 100201
+    },
+    "100202": {
+      "name": "超限挑战",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/Element/SceneElement02_Clock/Element_Clock_Light.unity",
+      "text_id": 100202
+    },
+    "100203": {
+      "name": "超限挑战",
+      "category": "异变空间",
+      "asset": "Assets/Scenes/SceneGameplay/PlayerTry/TestRoom.unity",
+      "text_id": 100203
+    },
+    "100301": {
+      "name": "联合演算",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/BossRush/SceneGameplay_BossRush.unity",
+      "text_id": 100301
+    },
+    "100302": {
+      "name": "联合演算",
+      "category": "模拟空间",
+      "asset": "Assets/Scenes/SceneGameplay/BossRush/SceneGameplay_BossRush_Sakura.unity",
+      "text_id": 100301
+    }
+  },
+  "scenic": {
+    "1001": {
+      "scene_id": 1,
+      "flag_id": 10001
+    },
+    "1002": {
+      "scene_id": 1,
+      "flag_id": 10002
+    },
+    "1003": {
+      "scene_id": 1,
+      "flag_id": 10003
+    },
+    "1004": {
+      "scene_id": 1,
+      "flag_id": 10004
+    },
+    "2001": {
+      "scene_id": 2,
+      "flag_id": 20001
+    },
+    "2002": {
+      "scene_id": 2,
+      "flag_id": 20002
+    },
+    "2003": {
+      "scene_id": 2,
+      "flag_id": 20003
+    },
+    "2004": {
+      "scene_id": 2,
+      "flag_id": 20004
+    },
+    "2005": {
+      "scene_id": 2,
+      "flag_id": 20005
+    },
+    "2006": {
+      "scene_id": 2,
+      "flag_id": 20006
+    },
+    "2007": {
+      "scene_id": 2,
+      "flag_id": 20007
+    },
+    "2008": {
+      "scene_id": 2,
+      "flag_id": 20008
+    },
+    "3001": {
+      "scene_id": 3,
+      "flag_id": 30001
+    },
+    "3002": {
+      "scene_id": 3,
+      "flag_id": 30002
+    },
+    "3003": {
+      "scene_id": 3,
+      "flag_id": 30003
+    },
+    "3004": {
+      "scene_id": 3,
+      "flag_id": 30004
+    },
+    "4001": {
+      "scene_id": 4,
+      "flag_id": 40001
+    },
+    "4002": {
+      "scene_id": 4,
+      "flag_id": 40002
+    },
+    "4003": {
+      "scene_id": 4,
+      "flag_id": 40003
+    },
+    "4004": {
+      "scene_id": 4,
+      "flag_id": 40004
+    },
+    "4005": {
+      "scene_id": 4,
+      "flag_id": 40005
+    },
+    "4006": {
+      "scene_id": 4,
+      "flag_id": 40006
+    },
+    "4007": {
+      "scene_id": 4,
+      "flag_id": 40007
+    },
+    "4008": {
+      "scene_id": 4,
+      "flag_id": 40008
+    },
+    "5001": {
+      "scene_id": 5,
+      "flag_id": 50001
+    },
+    "5002": {
+      "scene_id": 5,
+      "flag_id": 50002
+    },
+    "5003": {
+      "scene_id": 5,
+      "flag_id": 50003
+    },
+    "5004": {
+      "scene_id": 5,
+      "flag_id": 50004
+    },
+    "5005": {
+      "scene_id": 5,
+      "flag_id": 50005
+    },
+    "5006": {
+      "scene_id": 5,
+      "flag_id": 50006
+    },
+    "1001001": {
+      "scene_id": 1001,
+      "flag_id": 10010001
+    },
+    "1001002": {
+      "scene_id": 1001,
+      "flag_id": 10010002
+    },
+    "1001003": {
+      "scene_id": 1001,
+      "flag_id": 10010003
+    },
+    "1002001": {
+      "scene_id": 1002,
+      "flag_id": 10020001
+    },
+    "1002002": {
+      "scene_id": 1002,
+      "flag_id": 10020002
+    },
+    "1002003": {
+      "scene_id": 1002,
+      "flag_id": 10020003
+    },
+    "1002004": {
+      "scene_id": 1002,
+      "flag_id": 10020004
+    },
+    "1002005": {
+      "scene_id": 1002,
+      "flag_id": 10020005
+    },
+    "1002006": {
+      "scene_id": 1002,
+      "flag_id": 10020006
+    },
+    "1003001": {
+      "scene_id": 1003,
+      "flag_id": 10030001
+    },
+    "1003002": {
+      "scene_id": 1003,
+      "flag_id": 10030002
+    },
+    "1003003": {
+      "scene_id": 1003,
+      "flag_id": 10030003
+    }
+  },
+  "challenges": {
+    "100001": {
+      "scene_id": 1,
+      "kind": 0
+    },
+    "100002": {
+      "scene_id": 1,
+      "kind": 0
+    },
+    "100003": {
+      "scene_id": 1,
+      "kind": 0
+    },
+    "102001": {
+      "scene_id": 2,
+      "kind": 0
+    },
+    "102002": {
+      "scene_id": 2,
+      "kind": 0
+    },
+    "102003": {
+      "scene_id": 2,
+      "kind": 0
+    },
+    "102004": {
+      "scene_id": 2,
+      "kind": 0
+    },
+    "103001": {
+      "scene_id": 3,
+      "kind": 0
+    },
+    "103002": {
+      "scene_id": 3,
+      "kind": 0
+    },
+    "103003": {
+      "scene_id": 3,
+      "kind": 0
+    },
+    "104001": {
+      "scene_id": 4,
+      "kind": 0
+    },
+    "104002": {
+      "scene_id": 4,
+      "kind": 0
+    },
+    "104003": {
+      "scene_id": 4,
+      "kind": 0
+    },
+    "105001": {
+      "scene_id": 5,
+      "kind": 0
+    },
+    "105002": {
+      "scene_id": 5,
+      "kind": 0
+    },
+    "105003": {
+      "scene_id": 5,
+      "kind": 0
+    },
+    "105004": {
+      "scene_id": 5,
+      "kind": 0
+    },
+    "151001": {
+      "scene_id": 1001,
+      "kind": 0
+    },
+    "152001": {
+      "scene_id": 1002,
+      "kind": 0
+    },
+    "152002": {
+      "scene_id": 1002,
+      "kind": 0
+    },
+    "152003": {
+      "scene_id": 1002,
+      "kind": 0
+    },
+    "200001": {
+      "scene_id": 1,
+      "kind": 1
+    },
+    "200002": {
+      "scene_id": 1,
+      "kind": 1
+    },
+    "200003": {
+      "scene_id": 1,
+      "kind": 1
+    },
+    "202001": {
+      "scene_id": 2,
+      "kind": 1
+    },
+    "202002": {
+      "scene_id": 2,
+      "kind": 1
+    },
+    "202003": {
+      "scene_id": 2,
+      "kind": 1
+    },
+    "202004": {
+      "scene_id": 2,
+      "kind": 1
+    },
+    "203001": {
+      "scene_id": 3,
+      "kind": 1
+    },
+    "203002": {
+      "scene_id": 3,
+      "kind": 1
+    },
+    "203003": {
+      "scene_id": 3,
+      "kind": 1
+    },
+    "204001": {
+      "scene_id": 4,
+      "kind": 1
+    },
+    "204002": {
+      "scene_id": 4,
+      "kind": 1
+    },
+    "204003": {
+      "scene_id": 4,
+      "kind": 1
+    },
+    "205001": {
+      "scene_id": 5,
+      "kind": 1
+    },
+    "205002": {
+      "scene_id": 5,
+      "kind": 1
+    },
+    "205003": {
+      "scene_id": 5,
+      "kind": 1
+    },
+    "205004": {
+      "scene_id": 5,
+      "kind": 1
+    },
+    "251001": {
+      "scene_id": 1001,
+      "kind": 1
+    },
+    "252001": {
+      "scene_id": 1002,
+      "kind": 1
+    },
+    "252002": {
+      "scene_id": 1002,
+      "kind": 1
+    },
+    "252003": {
+      "scene_id": 1002,
+      "kind": 1
+    },
+    "253001": {
+      "scene_id": 1003,
+      "kind": 1
+    },
+    "300001": {
+      "scene_id": 1,
+      "kind": 2
+    },
+    "300002": {
+      "scene_id": 1,
+      "kind": 2
+    },
+    "300003": {
+      "scene_id": 1,
+      "kind": 2
+    },
+    "302001": {
+      "scene_id": 2,
+      "kind": 2
+    },
+    "302002": {
+      "scene_id": 2,
+      "kind": 2
+    },
+    "302003": {
+      "scene_id": 2,
+      "kind": 2
+    },
+    "302004": {
+      "scene_id": 2,
+      "kind": 2
+    },
+    "303001": {
+      "scene_id": 3,
+      "kind": 2
+    },
+    "303002": {
+      "scene_id": 3,
+      "kind": 2
+    },
+    "303003": {
+      "scene_id": 3,
+      "kind": 2
+    },
+    "304001": {
+      "scene_id": 4,
+      "kind": 2
+    },
+    "304002": {
+      "scene_id": 4,
+      "kind": 2
+    },
+    "304003": {
+      "scene_id": 4,
+      "kind": 2
+    },
+    "305001": {
+      "scene_id": 5,
+      "kind": 2
+    },
+    "305002": {
+      "scene_id": 5,
+      "kind": 2
+    },
+    "305003": {
+      "scene_id": 5,
+      "kind": 2
+    },
+    "305004": {
+      "scene_id": 5,
+      "kind": 2
+    },
+    "351001": {
+      "scene_id": 1001,
+      "kind": 2
+    },
+    "352001": {
+      "scene_id": 1002,
+      "kind": 2
+    },
+    "352002": {
+      "scene_id": 1002,
+      "kind": 2
+    },
+    "352003": {
+      "scene_id": 1002,
+      "kind": 2
+    },
+    "400001": {
+      "scene_id": 1,
+      "kind": 3
+    },
+    "400002": {
+      "scene_id": 1,
+      "kind": 3
+    },
+    "400003": {
+      "scene_id": 1,
+      "kind": 3
+    },
+    "404001": {
+      "scene_id": 4,
+      "kind": 3
+    },
+    "404002": {
+      "scene_id": 4,
+      "kind": 3
+    },
+    "404003": {
+      "scene_id": 4,
+      "kind": 3
+    },
+    "451001": {
+      "scene_id": 1001,
+      "kind": 3
+    },
+    "502001": {
+      "scene_id": 2,
+      "kind": 5
+    },
+    "502002": {
+      "scene_id": 2,
+      "kind": 5
+    },
+    "502003": {
+      "scene_id": 2,
+      "kind": 5
+    },
+    "502004": {
+      "scene_id": 2,
+      "kind": 5
+    },
+    "505001": {
+      "scene_id": 5,
+      "kind": 5
+    },
+    "505002": {
+      "scene_id": 5,
+      "kind": 5
+    },
+    "505003": {
+      "scene_id": 5,
+      "kind": 5
+    },
+    "505004": {
+      "scene_id": 5,
+      "kind": 5
+    },
+    "602001": {
+      "scene_id": 2,
+      "kind": 4
+    },
+    "602002": {
+      "scene_id": 2,
+      "kind": 4
+    },
+    "602003": {
+      "scene_id": 2,
+      "kind": 4
+    },
+    "602004": {
+      "scene_id": 2,
+      "kind": 4
+    },
+    "703001": {
+      "scene_id": 3,
+      "kind": 6
+    },
+    "703002": {
+      "scene_id": 3,
+      "kind": 6
+    },
+    "703003": {
+      "scene_id": 3,
+      "kind": 6
+    },
+    "804001": {
+      "scene_id": 4,
+      "kind": 7
+    },
+    "804002": {
+      "scene_id": 4,
+      "kind": 7
+    },
+    "804003": {
+      "scene_id": 4,
+      "kind": 7
+    },
+    "952001": {
+      "scene_id": 1002,
+      "kind": 8
+    },
+    "952002": {
+      "scene_id": 1002,
+      "kind": 8
+    },
+    "952003": {
+      "scene_id": 1002,
+      "kind": 8
+    },
+    "904001": {
+      "scene_id": 4,
+      "kind": 8
+    },
+    "904002": {
+      "scene_id": 4,
+      "kind": 8
+    },
+    "904003": {
+      "scene_id": 4,
+      "kind": 8
+    },
+    "1052001": {
+      "scene_id": 1002,
+      "kind": 9
+    },
+    "1052002": {
+      "scene_id": 1002,
+      "kind": 9
+    },
+    "1052003": {
+      "scene_id": 1002,
+      "kind": 9
+    },
+    "1105001": {
+      "scene_id": 5,
+      "kind": 10
+    },
+    "1105002": {
+      "scene_id": 5,
+      "kind": 10
+    },
+    "1105003": {
+      "scene_id": 5,
+      "kind": 10
+    },
+    "1105004": {
+      "scene_id": 5,
+      "kind": 10
+    },
+    "1205001": {
+      "scene_id": 5,
+      "kind": 11
+    },
+    "1205002": {
+      "scene_id": 5,
+      "kind": 11
+    },
+    "1205003": {
+      "scene_id": 5,
+      "kind": 11
+    },
+    "1205004": {
+      "scene_id": 5,
+      "kind": 11
+    },
+    "1305001": {
+      "scene_id": 5,
+      "kind": 12
+    },
+    "1305002": {
+      "scene_id": 5,
+      "kind": 12
+    },
+    "1305003": {
+      "scene_id": 5,
+      "kind": 12
+    },
+    "1305004": {
+      "scene_id": 5,
+      "kind": 12
+    },
+    "999900001": {
+      "scene_id": 0,
+      "kind": 1
+    }
+  }
+}

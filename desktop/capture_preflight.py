@@ -12,7 +12,7 @@ import tempfile
 FILES = ['capture_report.py', 'capture_delivery.py', 'capture-session.ps1', 'capture_update_package.py', 'capture-update.mjs', 'capture-update-install.mjs', 'capture-update-apply.mjs', 'capture-update.json',
     *['capturelib/' + name for name in ('parse_pcap.py', 'pcap_compat.py', 'account_identity.py',
        'checklist.py', 'capture_quality.py', 'dungeons.py', 'exploration.py',
-       'exploration_catalog.json', 'archive_files.py', 'own_scenes.py', 'capture_version.py', 'packet_context.py', 'life_social.py')]]
+       'exploration_catalog.json', 'scene_catalog.json', 'scene_metadata.py', 'world_activities.py', 'archive_files.py', 'own_scenes.py', 'capture_version.py', 'packet_context.py', 'life_social.py')]]
 
 
 def inspect(app, toolkit, output=None):

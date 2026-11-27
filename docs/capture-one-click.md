@@ -25,6 +25,14 @@ Every distinct snapshot is retained. The table shows the largest recorded snapsh
 
 A standalone scene archive carries declared ownership metadata. Opening one does not establish a fresh login or create an account backup.
 
+## Scene names and world progress
+
+Scene tables show Chinese names joined from the client resource catalog. The complete scene reference is included under docs/scene-reference.md. Unnamed entries remain explicitly unnamed.
+
+The exploration page separately reports scenic-spot, timed-challenge, and world-challenge evidence. Raw flags, challenges, riddles, and the account's own challenge times remain in the archive. world-activities.json retains their observations without treating repeated global lists as separate progress on every map.
+
+An empty restoration response from a server does not mean the original capture was empty. Unlock flag IDs do not replace scenic completion records. A Start state or a recorded challenge time alone does not establish an incomplete history; the original fields are retained for import integration.
+
 ## Life and social records
 
 Open all six profession pages and their respective pictorial pages. Base levels, skills, achievements, and pictorial history counts are separate observations. Viewing one does not establish coverage of the other. No crafting or reward collection is needed.

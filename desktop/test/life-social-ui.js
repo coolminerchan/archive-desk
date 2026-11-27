@@ -15,7 +15,7 @@
     await until(() => !document.querySelector(`[data-action="${name}"]:disabled`), name + ' finished')
   }
   await until(() => window.desktop && document.querySelector('nav'), 'startup')
-  check((await state()).version === (fixture.version || '0.7.1'), 'Wrong version')
+  check((await state()).version === fixture.version, 'Wrong version')
   await action('analyze')
   await until(async () => !!(await state()).captureReport?.life_social, 'legacy report')
   const getItem = (s, id) => s.captureReport.items.find(row => row.id === id)

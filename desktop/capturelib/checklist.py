@@ -40,12 +40,15 @@ GROUPS = [
     ('map_moons','月亮与情绪月亮',['GetCollectMoonInfoRsp'],'切换各已解锁地图，打开月亮收集页面；仅记录实际返回的地区'),
     ('map_scene','场景与水晶观测',['@map_scene'],'进入各已解锁地区，等待场景加载；单个场景不代表整张地图'),
     ('map_boxes','场景宝箱观测',['@map_boxes'],'进入对应地区并等待宝箱状态返回；只确认已观测宝箱'),
+    ('map_scenic','美丽景点历史观测',['@map_scenic'],'进入对应地区等待场景返回；解锁标记不等同于已完成景点'),
+    ('map_challenges','限时挑战历史观测',['@map_challenges','ChallengeStateUpdateRsp','ChallengeFriendRankRsp'],'进入各地区并打开挑战记录。仅有用时或 Start 状态不判为未完成'),
+    ('map_riddles','世界挑战历史观测',['@map_riddles','RiddleStateUpdateRsp'],'进入各地区等待世界挑战历史返回；无需重新挑战或领取奖励'),
     ('dungeons','小副本进度摘要',['@dungeons'],'进入各已解锁地区，等待场景中的副本进度返回；总数未知，不表示全部采齐'),
     ('dungeon_details','小副本独立详情',['@dungeon_details'],'按需打开各副本详情；需保留副本内宝箱时进入副本等待加载，无需重打或领取奖励'),
     ('friend','社交原始资料',['FriendRsp','FriendListRsp'],'打开社交界面；列表分类另见带分类的社交列表'),
     ('archive','档案资料',['GetArchiveInfoRsp'],'打开档案界面'),
 ]
-RELEVANT = {n for _,_,targets,_ in GROUPS for n in targets if not n.startswith('@')} | {'PackNotice','GetAllCharacterEquipRsp','SceneDataNotice', 'DungeonViewRsp', 'DungeonEnterRsp', 'DungeonRepeatEnterRsp', 'DungeonFinishRsp', 'DungeonOpenFinalBoxNotice'}
+RELEVANT = {n for _,_,targets,_ in GROUPS for n in targets if not n.startswith('@')} | {'PackNotice','GetAllCharacterEquipRsp','SceneDataNotice', 'FlagBattleStateUpdateRsp', 'DungeonViewRsp', 'DungeonEnterRsp', 'DungeonRepeatEnterRsp', 'DungeonFinishRsp', 'DungeonOpenFinalBoxNotice'}
 STATES = {'collected':'已采集','partial':'未见装备列表','empty':'已收到（列表为空）','waiting':'尚未采集','missing':'未采集到','unknown':'暂时无法判断'}
 
 
@@ -91,6 +94,10 @@ def observe(name, body, counts, empty):
             if not data.get('treasure_boxes'):empty['@map_boxes']+=1
         if isinstance(data,dict) and not is_garden_scene(data) and any(row.get('dungeon_id') for row in data.get('dungeons',[])):
             counts['@dungeons']+=1
+        if isinstance(data,dict) and not is_garden_scene(data):
+            for key, present in [('map_scenic',any(row.get('type') in (1,'EMissionType_ScenicSpot') for row in data.get('flags',[]))),
+                                 ('map_challenges',bool(data.get('challenges'))),('map_riddles',bool(data.get('riddles')))]:
+                if present:counts['@'+key]+=1
     if name in ('DungeonViewRsp','DungeonEnterRsp','DungeonRepeatEnterRsp','DungeonFinishRsp') and body.get('dungeon_data',{}).get('dungeon_id'):
         counts['@dungeon_details']+=1
     list_fields={'GetWeaponRsp':'weapons','GetArmorRsp':'armors','GetPosterRsp':'posters','GetPetRsp':'pets','GetMailsRsp':'mails','GachaListRsp':'gachas','GachaRecordRsp':'records','FriendRsp':'info','FriendListRsp':'info'}

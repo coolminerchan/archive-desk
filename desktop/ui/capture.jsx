@@ -124,17 +124,26 @@ function AccountCapturePage({ state, tab, busy, act }) {
       <li>打开收集、收藏与月亮页面，切换地区，等待页面加载完成。</li>
       <li>进入各已解锁地区，等待场景、水晶和宝箱状态返回。只停留在主城无法观测其他地区。</li>
       <li>已完成互动的月亮与情绪月亮按响应记录；无需为采集刻意消耗道具或领取奖励。</li>
+      <li>景点和世界挑战历史随场景返回，限时挑战还可打开挑战记录核对。备份有记录但进服全显示未完成时，应检查服务端恢复，先不要全部重采。</li>
     </ol><p>实时数据可能延迟落盘，停止后会统一核对。场景快照仅表示已观测区域，不代表全图采齐，也不会把未知当作 0。</p></div>
     {exploration ? <>
       <div className="capture-guide"><strong>{exploration.summary}</strong><p>资源目录 {exploration.resource_version} · 目录待匹配 {exploration.unknown_ids?.length || 0} 项（数据已保留） · {exploration.attribution === 'single_observed_uid' ? '已关联单个账号' : exploration.attribution === 'single_observed_player_id' ? '已关联单个角色，登录 UID 未返回' : '缺少唯一账号归属'}</p></div>
       <div className="exploration-table"><table><thead><tr><th>场景</th><th>观测范围</th><th>探索点</th><th>收集物观测</th><th>水晶观测 / 声明总量</th><th>已开宝箱</th><th>月亮 / 情绪月亮</th></tr></thead><tbody>
-        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{id}</td>
+        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{row.scene_name || '名称待核对'}<small>场景 {id}</small></td>
           <td>{({ not_captured: '未采到', scene_snapshot_partial: '部分场景快照', observed_evidence: '已见相关响应' })[row.collection_coverage]}</td>
           <td>{row.points.collected ?? '未知'} / {row.points.total ?? '未知'}</td>
           <td>{row.items.collected ?? '未知'}</td>
           <td>{row.crystals.collected ?? '未知'} / {row.crystals.total ?? '未知'}{row.crystals.mismatch && <small>目录数量与声明不一致</small>}</td>
           <td>{row.one_time_boxes.collected ?? '未知'}</td><td>{row.moons.collected_count ?? (row.moons.collected_ids.length || '未知')} / {row.moons.interacted_emotion_count ?? (row.moons.interacted_emotion_ids.length || '未知')}</td></tr>)}
       </tbody></table></div>
+      {exploration.activities && <div className="card checklist-card" data-testid="world-activities">
+        <h2>景点与挑战历史证据</h2><p>下表说明备份里是否存在记录。游戏显示“未完成”仍需核对服务端导入和回包，不能由此认定没采到。</p>
+        <div className="exploration-table"><table><thead><tr><th>类别</th><th>已观测项目</th><th>明确完成证据</th><th>完成状态未知</th></tr></thead><tbody>
+          {exploration.activities.categories.map(row => <tr key={row.id}><td>{row.label}</td><td>{row.state === 'unknown' ? '未采到 / 未归属' : row.observed_count}</td>
+            <td>{row.state === 'unknown' ? '未知' : row.observed_completed_count}</td><td>{row.state === 'unknown' ? '未知' : row.unknown_completion_count}</td></tr>)}
+        </tbody></table></div><p className="capture-hint">本人挑战用时历史 {exploration.activities.challenge_history_count} 项。{exploration.activities.note}</p>
+        <p className="capture-hint">重复历史不累加，不把当前场景当作全局挑战的归属。完整记录及原始状态见账号包中的 world-activities.json。</p>
+      </div>}
       <div className="actions">{action('open-capture-folder', '打开完整报告', FolderOpen)}</div>
     </> : <Empty>{state.recording ? '正在等待地图信息落盘，可继续在游戏中操作，停止后生成最终报告。' : '开始一次采集，或打开已有备份后查看各地区观测。'}</Empty>}
   </>

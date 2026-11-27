@@ -6,6 +6,7 @@ from pathlib import Path, PurePosixPath
 from zipfile import ZipFile, ZIP_DEFLATED
 
 from archive_files import ArchiveView
+from scene_metadata import scene_metadata
 
 
 def positive_id(value):
@@ -124,7 +125,7 @@ class OwnScenes:
         scenes = []
         for scene_id, rows in sorted(groups.items()):
             selected = max(rows, key=lambda row: row['bytes'])
-            scenes.append(dict(selected, snapshots=len(rows), observations=sum(r['observations'] for r in rows)))
+            scenes.append(dict(selected, **scene_metadata(scene_id), snapshots=len(rows), observations=sum(r['observations'] for r in rows)))
         identity = dict(player_id=identity['player_id'], uid=identity.get('uid'))
         index = dict(schema_version=1, kind='own_scene_collection', identity=identity,
             identity_source='main_response' if not allow_declared else 'archive_metadata',

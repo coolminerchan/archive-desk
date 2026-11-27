@@ -1,3 +1,9 @@
+# 0.7.3
+
+- Display resource-backed Chinese names for scenes, keeping blank or unrecognized names explicit.
+- Separate scenic, timed-challenge, world-challenge, and own challenge-time evidence from game restoration status.
+- Retain original activity observations, avoid duplicate global-history counts, and include the complete scene-name reference.
+
 # 0.7.2
 
 - Apply verified updates to the existing installation after both application processes close.
