@@ -20,8 +20,11 @@ import cocoa from './assets/avatar-ke2.png'
 import fu from './assets/avatar-fu.png'
 import miao from './assets/avatar-miao.png'
 import guang from './assets/avatar-guang.png'
+import jie from './assets/avatar-jie.png'
+import li from './assets/avatar-li.png'
 
 export const portraits = [shi, ke, cocoa, fu, miao, guang]
+export const guidePortraits = { login: shi, items: ke, equipment: cocoa, maps: fu, garden: miao, life: jie, social: li, other: guang }
 export const artwork = {
   train: { id: 'train', title: '樱花列车', image: train, thumb: trainThumb, blur: trainBlur, position: '50% 28%' },
   morning: { id: 'morning', title: '启程之朝', image: morning, thumb: morningThumb, blur: morningBlur, logo: morningTitle, position: '50% 72%' },

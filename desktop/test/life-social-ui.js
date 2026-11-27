@@ -33,6 +33,8 @@
   check(document.body.innerText.includes('好友申请') && document.body.innerText.includes('黑名单'), 'Class labels missing')
   check(document.body.innerText.includes('查看六类生活职业与图鉴'), 'Guidance missing')
   check([...document.querySelectorAll('.capture-steps img')].every(img => !!img.getAttribute('src')), 'Broken guide portrait')
+  const guideImages = [...document.querySelectorAll('.capture-steps .step-avatar img')]
+  check(guideImages.length === 8 && new Set(guideImages.map(img => img.src)).size === 8, 'Guide steps need eight distinct game portraits')
   await action('capture-export')
   check(!!(await state()).captureDelivery?.sha256, 'Export was not validated')
   await action('analyze')

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Activity, ArrowDownToLine, CircleCheck, CircleHelp, FolderOpen, Library, Play, Radio, RefreshCw, ScanLine, ShieldCheck, Sprout, Square, Swords, Users } from 'lucide-react'
+import { Activity, ArrowDownToLine, CircleCheck, CircleHelp, FolderOpen, Library, Play, Radio, RefreshCw, ScanLine, ShieldCheck, Square, Swords } from 'lucide-react'
 import { guidedSteps } from './capture-guide.mjs'
-import { artwork, portraits, ArtHero, ArtHeading } from './artwork.jsx'
+import { artwork, guidePortraits, ArtHero, ArtHeading } from './artwork.jsx'
 import GardenCapturePage from './gardens.jsx'
 import OwnScenesPage from './own-scenes.jsx'
 import LifeSocialRecords from './life-social.jsx'
@@ -192,7 +192,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
         <p className="capture-hint">{peer ? `范围 ${peer} · TCP ${port || '全部端口'}` : `范围 TCP ${port || '11001–11004、21001、21002'}`}<br />连续记录，自动换文件。单次原始记录限 30 分钟或约 448 MB。</p>
       </Card> : <Card icon={Play} title="游戏里这样操作" help={state.recording ? `建议下一步：${next?.title || '完成浏览后退出游戏，等待保存'}` : '按顺序浏览即可。标记表示已见响应，最终数量在保存后核对。'}>
         <div className="capture-steps">{steps.map((step, index) => <details key={step.id} className={'capture-step ' + step.status} open={step.id === next?.id}>
-          <summary><span className="step-avatar">{step.id === 'life' ? <Sprout size={24} style={{ margin: 6 }} /> : step.id === 'social' ? <Users size={24} style={{ margin: 6 }} /> : <img src={portraits[step.id === 'other' ? 5 : index]} alt="" />}<b>{step.status === 'received' ? '✓' : index + 1}</b></span><strong>{step.title}</strong><small>{step.status === 'received' ? '已见响应' : step.status === 'partial' ? '继续补充' : '待浏览'}</small></summary>
+          <summary><span className="step-avatar"><img src={guidePortraits[step.id]} alt="" /><b>{step.status === 'received' ? '✓' : index + 1}</b></span><strong>{step.title}</strong><small>{step.status === 'received' ? '已见响应' : step.status === 'partial' ? '继续补充' : '待浏览'}</small></summary>
           <p>{step.text}</p></details>)}</div>
         <p className="capture-hint">实时核对可能延迟，无需等每项变色才继续。若浏览完毕，可退出游戏自动保存，也可点“停止并保存”。</p>
       </Card>}
