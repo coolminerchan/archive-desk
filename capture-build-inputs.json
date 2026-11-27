@@ -1,7 +1,7 @@
 {
   "version": "0.7.3",
   "runtime_package": "OverField-Capture-0.7.3-Windows-x64.zip",
-  "runtime_package_sha256": "b47e343a7fddb6d43c52d09bb8c688bca968ba3f3cde2c687e6ea14ae8ca0e2c",
+  "runtime_package_sha256": "0a7ce817ccbda5df80313a6821f2732844e1cae597985b0927387cc52795aa2c",
   "webview2_url": "https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/1.0.4370.26/microsoft.web.webview2.1.0.4370.26.nupkg",
   "webview2_sha256": "1c0dacac84b70109b3fd42f90c53a0ba942abc3a87590d7a4e0ccd86e4a06cf4",
   "native_files": [

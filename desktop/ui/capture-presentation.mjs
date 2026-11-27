@@ -1,7 +1,21 @@
 import catalog from '../capturelib/scene_catalog.json' with { type: 'json' }
 
 export function sceneLabel(id, row) {
+  if (Number(id) === 6) return '夜间场景（资源未命名）'
   return catalog.scenes[String(id)]?.name || row?.scene_name || `未命名场景 ${id}`
+}
+
+export function sceneCategory(id, row) {
+  return catalog.scenes[String(id)]?.category || row?.scene_category || '类型未记录'
+}
+
+export function sceneNote(id) {
+  return Number(id) === 6 ? '资源文件 SceneBattle003_V7_night；当前世界配置未列出，不能据此认定需要补采。' : ''
+}
+
+export function groupScenes(rows) {
+  return { gardens: rows.filter(row => Number(row.scene_id) === 9999),
+    worlds: rows.filter(row => Number(row.scene_id) !== 9999) }
 }
 
 export function equipmentLabel(row) {

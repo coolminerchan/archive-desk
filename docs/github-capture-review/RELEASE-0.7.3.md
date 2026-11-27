@@ -7,6 +7,7 @@ Added scene names and clearer world-progress evidence.
 - Activity observations are retained in world-activities.json and the original protocol files. Repeated global histories are counted by distinct ID without assigning every entry to its container scene.
 - Unlock flags do not substitute for scenic completion. A timed challenge's Start state or a recorded time alone does not become an “unfinished” verdict.
 - Older cached reports can display verified scene names without a new capture. Equipment and capture-quality messages identify the actual missing information instead of a generic review warning.
+- Exploration snapshots and garden decoration snapshots have separate tables. Scene 6 includes an explanation of its unnamed night-scene resource and its absence from the current world configuration.
 
 This release updates capture and inspection. Server-side restoration still needs to return the captured completion fields; this collector does not modify game saves.
 

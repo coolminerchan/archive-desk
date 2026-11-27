@@ -5,7 +5,7 @@ import { artwork, portraits, ArtHero, ArtHeading } from './artwork.jsx'
 import GardenCapturePage from './gardens.jsx'
 import OwnScenesPage from './own-scenes.jsx'
 import LifeSocialRecords from './life-social.jsx'
-import { equipmentLabel, qualityLabel, sceneLabel } from './capture-presentation.mjs'
+import { equipmentLabel, qualityLabel, sceneLabel, sceneNote } from './capture-presentation.mjs'
 
 const channels = [['auto', '自动 / 通用 PC'], ['cn-pc', '国服 PC · TapTap / B站'], ['steam', 'Steam · 动态端口'], ['emulator', '安卓渠道 · 模拟器'], ['manual', '手动连接范围']]
 const states = { collected: '已见响应', empty: '已收到空列表', partial: '有数据，待补齐', missing: '尚缺响应', waiting: '等待响应', unknown: '暂无法判断' }
@@ -130,7 +130,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
     {exploration ? <>
       <div className="capture-guide"><strong>{exploration.summary}</strong><p>资源目录 {exploration.resource_version} · 目录待匹配 {exploration.unknown_ids?.length || 0} 项（数据已保留） · {exploration.attribution === 'single_observed_uid' ? '已关联单个账号' : exploration.attribution === 'single_observed_player_id' ? '已关联单个角色，登录 UID 未返回' : '缺少唯一账号归属'}</p></div>
       <div className="exploration-table"><table><thead><tr><th>场景</th><th>观测范围</th><th>探索点</th><th>收集物观测</th><th>水晶观测 / 声明总量</th><th>已开宝箱</th><th>月亮 / 情绪月亮</th></tr></thead><tbody>
-        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{sceneLabel(id, row)}<small>场景 {id}</small></td>
+        {Object.entries(exploration.maps || {}).map(([id, row]) => <tr key={id}><td>{sceneLabel(id, row)}<small>场景 {id}</small>{sceneNote(id) && <small>{sceneNote(id)}</small>}</td>
           <td>{({ not_captured: '未采到', scene_snapshot_partial: '部分场景快照', observed_evidence: '已见相关响应' })[row.collection_coverage]}</td>
           <td>{row.points.collected ?? '未知'} / {row.points.total ?? '未知'}</td>
           <td>{row.items.collected ?? '未知'}</td>

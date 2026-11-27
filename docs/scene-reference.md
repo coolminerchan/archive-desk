@@ -2,6 +2,8 @@
 
 Names are joined from Scene.TextID and StringScene.ID in the local CN PC resource tables. Blank names stay unknown; no name is inferred from a neighboring ID.
 
+Scene 6 has no Chinese name. Its asset path is Assets/Scenes/SceneBattle002/Scene/SceneBattle003_V7_night.unity. Its exploration totals are all zero and the current ScenesConfigAsset world list omits it. The UI labels it as an unnamed night scene, describing the internal filename without claiming an official map name or a capture requirement. The retained account recording contains no scene 6 snapshot.
+
 | Scene ID | Chinese name | Category |
 | --- | --- | --- |
 | 1 | 樱庭世界·昼 | 开放空间 |

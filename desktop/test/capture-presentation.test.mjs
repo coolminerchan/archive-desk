@@ -1,12 +1,21 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {equipmentLabel, qualityLabel, sceneLabel} from '../ui/capture-presentation.mjs'
+import {equipmentLabel, groupScenes, qualityLabel, sceneCategory, sceneLabel, sceneNote} from '../ui/capture-presentation.mjs'
 
 test('old cached scene reports use verified names without requiring recapture',()=>{
   assert.equal(sceneLabel(1,{}),'樱庭世界·昼')
   assert.equal(sceneLabel(1002,{}),'鸳鸯锅')
-  assert.equal(sceneLabel(6,{}),'未命名场景 6')
+  assert.equal(sceneLabel(6,{}),'夜间场景（资源未命名）')
+  assert.ok(sceneNote(6).includes('当前世界配置未列出'))
   assert.equal(sceneLabel(987654,{}),'未命名场景 987654')
+})
+test('exploration scenes never enter the furniture table, including legacy reports',()=>{
+  const rows=[{scene_id:1,garden_furniture:0},{scene_id:1002,garden_furniture:0},{scene_id:9999,garden_furniture:500}]
+  const {gardens,worlds}=groupScenes(rows)
+  assert.deepEqual(worlds.map(row=>row.scene_id),[1,1002])
+  assert.deepEqual(gardens.map(row=>row.scene_id),[9999])
+  assert.equal(sceneCategory(1,{}),'开放空间')
+  assert.equal(sceneCategory(100,{}),'模拟空间')
 })
 test('additional preserved equipment does not make a matching list appear unresolved',()=>{
   assert.equal(equipmentLabel({quantity_matches:true,matches:false,other_only:33,reported:[433]}),'列表数量吻合')
