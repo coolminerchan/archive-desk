@@ -1,37 +1,17 @@
 import React from 'react'
-import { ArrowDownToLine, FolderOpen, Layers } from 'lucide-react'
-import { ArtHeading, artwork } from './artwork.jsx'
+import { ArrowDownToLine, FolderOpen } from 'lucide-react'
+import { Action, Blank, Disclosure, Note, Panel } from './capture-ui.jsx'
 import { groupScenes, sceneCategory, sceneLabel, sceneNote } from './capture-presentation.mjs'
 
-export default function OwnScenesPage({ state, busy, act }) {
-  const report = state.captureSceneReport || state.captureReport
-  const data = report?.own_scenes
-  const rows = data?.scenes || []
-  const { gardens, worlds } = groupScenes(rows)
-  const locked = !!busy || !!state.recording
-  const button = (action, text, Icon, disabled) => <button type="button" className="button secondary" data-action={action}
-    disabled={locked || disabled} onClick={() => act(action, undefined, action.endsWith('export') ? '本人场景包已校验并保存' : undefined)}><Icon size={16} />{busy === action ? '处理中…' : text}</button>
-  return <>
-    <ArtHeading title="本人频道场景" description="探索地图保留场景记录，家园单独查看装修快照。" art={artwork.morning} />
-    <div className="actions">{button('capture-scenes-open', '打开场景或账号包', FolderOpen)}
-      {button('capture-scenes-export', '保存本人场景 ZIP', ArrowDownToLine, !data?.bundle)}</div>
-    <div className="capture-guide"><strong>{state.recording ? '正在录制，下方是已完成解析的结果' : '场景按归属单独整理'}</strong>
-      <p>在「采集与核对」完成账号录制，并进入自己的频道等待场景加载；已有账号包可直接打开。探索场景中的区域和宝箱数量是回包条目，不表示整张地图的完成度。</p>
-      <p>保留所有不同快照，表格展示信息较多的一份，不跨快照拼接，也不代表最终状态。此页只导出，不写入游戏存档。</p></div>
-    {data?.identity && <div className="capture-guide"><strong>{data.identity.uid ? `${data.identity_source === 'archive_metadata' ? '归档 UID' : '登录 UID'} ${data.identity.uid}` : '登录 UID 未记录'}</strong>
-      <p>{data.identity_source === 'archive_metadata' ? '归属来自包内索引，未重新验证登录。' : '归属来自本次账号主数据。'}场景 {data.scene_count} 个 · 独立快照 {data.snapshot_count} 份。</p></div>}
-    {!!worlds.length && <section className="card checklist-card" data-testid="world-scene-records"><h2>探索与其他场景</h2>
-      <p>查看场景快照和已返回的区域、宝箱记录。景点与挑战历史请在「探索证据」中查看。</p>
-      <div className="exploration-table"><table><thead><tr><th>场景</th><th>场景类型</th><th>独立快照</th><th>区域记录</th><th>宝箱记录</th></tr></thead><tbody>
-        {worlds.map(row => <tr key={row.scene_id}><td>{sceneLabel(row.scene_id, row)}<small>场景 {row.scene_id}</small>{sceneNote(row.scene_id) && <small>{sceneNote(row.scene_id)}</small>}</td>
-          <td>{sceneCategory(row.scene_id, row)}</td><td>{row.snapshots}</td><td>{row.areas ?? '未记录'}</td><td>{row.treasure_boxes ?? '未记录'}</td></tr>)}
-      </tbody></table></div></section>}
-    {!!gardens.length && <section className="card checklist-card" data-testid="garden-scene-records"><h2>家园装修快照</h2>
-      <p>家园请走到各区域等待加载，近处的一份快照不能代表全部家具。</p>
-      <div className="exploration-table"><table><thead><tr><th>家园</th><th>独立快照</th><th>观测家具</th><th>摆放角色</th><th>房间装饰</th><th>载具 / 椅子</th></tr></thead><tbody>
-        {gardens.map(row => <tr key={row.scene_id}><td>{sceneLabel(row.scene_id, row)}<small>场景 {row.scene_id}</small></td><td>{row.snapshots}</td><td>{row.garden_furniture}</td><td>{row.placed_characters}</td><td>{row.room_decor}</td><td>{row.vehicles} / {row.chairs}</td></tr>)}
-      </tbody></table></div></section>}
-    {!rows.length && <div className="empty"><Layers size={18} /><span>尚无可确认属于本人频道的场景。请先采集账号主数据，再进入自己的场景；公共频道不会猜作本人数据。</span></div>}
-    {state.captureError && <div className="notice error">{state.captureError}</div>}
-  </>
+export default function OwnScenesPage({state,busy,act}) {
+  const data=(state.captureSceneReport||state.captureReport)?.own_scenes
+  const {gardens,worlds}=groupScenes(data?.scenes||[]),locked=!!state.recording
+  return <Panel title="本人场景" description="探索地区与自家装修分别保存。" aside={<div className="actions"><Action name="capture-scenes-open" act={act} busy={busy} disabled={locked} icon={FolderOpen}>打开场景包</Action><Action name="capture-scenes-export" act={act} busy={busy} disabled={locked||!data?.bundle} icon={ArrowDownToLine}>另存</Action></div>}>
+    {data?.identity && <Note>{data.identity.uid?`UID ${data.identity.uid}`:'登录 UID 未记录'} · {data.scene_count} 个场景 · {data.snapshot_count} 份记录{data.identity_source==='archive_metadata'?' · 归属来自包内索引':''}</Note>}
+    {!!worlds.length && <div data-testid="world-scene-records"><h3 className="c-subheading">探索地区</h3><div className="c-scene-list">{worlds.map(row=><div key={row.scene_id}><span><strong>{sceneLabel(row.scene_id,row)}</strong><small>{sceneCategory(row.scene_id,row)}</small></span><b>{row.snapshots}<small>份记录</small></b></div>)}</div></div>}
+    {!!gardens.length && <div data-testid="garden-scene-records"><h3 className="c-subheading">自家装修</h3><div className="exploration-table"><table><thead><tr><th>家园</th><th>家具</th><th>摆放角色</th><th>房间装饰</th></tr></thead><tbody>{gardens.map(row=><tr key={row.scene_id}><td>{sceneLabel(row.scene_id,row)}</td><td>{row.garden_furniture}</td><td>{row.placed_characters}</td><td>{row.room_decor}</td></tr>)}</tbody></table></div></div>}
+    {!worlds.length&&!gardens.length && <Blank title="还没有可确认归属的场景">采集账号后进入自己的频道，或打开已有场景包。</Blank>}
+    {data && <Disclosure title="场景编号与记录详情"><div className="exploration-table"><table><thead><tr><th>场景</th><th>记录数</th><th>区域</th><th>宝箱</th><th>载具 / 椅子</th></tr></thead><tbody>{(data.scenes||[]).map(row=><tr key={row.scene_id}><td>{sceneLabel(row.scene_id,row)}<small>编号 {row.scene_id}{sceneNote(row.scene_id)&&` · ${sceneNote(row.scene_id)}`}</small></td><td>{row.snapshots}</td><td>{row.areas??'未记录'}</td><td>{row.treasure_boxes??'未记录'}</td><td>{row.vehicles??'—'} / {row.chairs??'—'}</td></tr>)}</tbody></table></div><p>不同记录分别保留，表格展示信息较多的一份，不合并为最终状态。场景区域和宝箱条数不代表全图完成度。</p></Disclosure>}
+    {!!state.captureReport?.gardens?.length&&<Disclosure title="旧账号记录中附带的家园装修">{state.captureReport.gardens.map((garden,index)=><div className="c-setting-row" key={garden.owner_uid}><span><strong>{garden.owner_name||'屋主昵称未返回'}</strong><small>家园 {garden.owner_uid} · 家具 {garden.furniture_count??'未确认'} 件</small></span><Action name="capture-export-garden" act={act} busy={busy} disabled={locked||!garden.path} args={{index}} icon={ArrowDownToLine}>单独保存</Action></div>)}</Disclosure>}
+  </Panel>
 }

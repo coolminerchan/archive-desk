@@ -2,7 +2,7 @@
 
 ## Finding captured records
 
-The capture screen has direct shortcuts for crystals, scenic spots, the Nebula Tree, and life skills. The sidebar separates 水晶与景点 from 星云树与生活.
+The sidebar has four destinations: 备份账号 (account backup), 查看资料 (saved records), 家园装修 (home decoration), and 设置 (settings). Saved records are divided into equipment, maps, the Nebula Tree, life professions, social lists, dungeons, and scenes. Technical details stay inside expandable sections.
 
 For crystals, open the map, regional exploration and collection pages while recording, then visit unlocked regions and wait for scene loading. Scenic history returns with scene data. Neither requires repeating collection, photography, or rewards. Observations do not establish complete map coverage.
 

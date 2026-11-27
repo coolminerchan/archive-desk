@@ -1,49 +1,27 @@
-;(async () => {
-  const fixture = window.__fixture
-  document.addEventListener('click', event => { if (event.isTrusted) { event.preventDefault(); event.stopImmediatePropagation() } }, true)
-  const pause = ms => new Promise(ok => setTimeout(ok, ms))
-  const check = (condition, message) => { if (!condition) throw new Error(message) }
-  async function until(fn, label) {
-    const started = Date.now()
-    while (Date.now() - started < 60000) { if (await fn()) return; await pause(150) }
-    throw new Error('Timed out: ' + label + '\n' + document.body.innerText)
-  }
-  async function state() { const result = await window.desktop.act('state'); check(!result.error, result.error); return result.value }
-  async function action(name) {
-    await until(() => { const b = document.querySelector(`[data-action="${name}"]:not(:disabled)`); if (!b) return false; b.click(); return true }, name)
-    await pause(200)
-    await until(() => !document.querySelector(`[data-action="${name}"]:disabled`), name + ' finished')
-  }
-  await until(() => window.desktop && document.querySelector('nav'), 'startup')
-  check((await state()).version === fixture.version, 'Wrong version')
-  await action('analyze')
-  await until(async () => !!(await state()).captureReport?.life_social, 'legacy report')
-  const getItem = (s, id) => s.captureReport.items.find(row => row.id === id)
-  let current = await state()
-  check(getItem(current, 'life_base').state === 'collected', 'Legacy base coverage lost')
-  check(getItem(current, 'life_history').state === 'unknown', 'Legacy history was invented')
-  check(getItem(current, 'social_lists').state === 'unknown', 'Legacy social type was guessed')
-  check(document.body.innerText.includes('旧 ZIP 缺少请求上下文'), 'Legacy instructions missing')
-  await action('analyze')
-  await until(async () => getItem(await state(), 'life_history').state === 'collected', 'paired history')
-  current = await state()
-  check(getItem(current, 'social_lists').state === 'collected', 'Social classes incomplete')
-  check(getItem(current, 'life_base').state === 'collected', 'Six profession base types incomplete')
-  check(document.body.innerText.includes('生活与社交补充记录'), 'New data card missing')
-  check(document.body.innerText.includes('好友申请') && document.body.innerText.includes('黑名单'), 'Class labels missing')
-  check(document.body.innerText.includes('查看六类生活职业与图鉴'), 'Guidance missing')
-  check([...document.querySelectorAll('.capture-steps img')].every(img => !!img.getAttribute('src')), 'Broken guide portrait')
-  const guideImages = [...document.querySelectorAll('.capture-steps .step-avatar img')]
-  check(guideImages.length === 8 && new Set(guideImages.map(img => img.src)).size === 8, 'Guide steps need eight distinct game portraits')
-  await action('capture-export')
-  check(!!(await state()).captureDelivery?.sha256, 'Export was not validated')
-  await action('analyze')
-  await until(async () => (await state()).captureReport?.input === fixture.exportedZip, 'reopened archive')
-  current = await state()
-  check(getItem(current, 'social_lists').state === 'collected' && getItem(current, 'life_history').state === 'collected', 'Reopen lost classification')
-  check(!document.querySelector('.notice.error'), 'UI error')
-  document.querySelector('[data-testid="life-social-records"]').scrollIntoView({ block: 'start' })
-  await pause(300)
-  check(document.documentElement.scrollWidth <= innerWidth + 2, 'Horizontal overflow')
-  window.chrome.webview.postMessage({ kind: 'test-done', success: true })
-})().catch(error => window.chrome.webview.postMessage({ kind: 'test-done', success: false, error: error.stack || error.message }))
+;(async()=>{
+  const f=window.__fixture,wait=ms=>new Promise(ok=>setTimeout(ok,ms)),check=(v,m)=>{if(!v)throw Error(m)}
+  document.addEventListener('click',e=>{if(e.isTrusted){e.preventDefault();e.stopImmediatePropagation()}},true)
+  const until=async(fn,label)=>{const start=Date.now();while(Date.now()-start<60000){if(await fn())return;await wait(100)}throw Error('Timed out: '+label)}
+  const state=async()=>{const r=await window.desktop.act('state');check(!r.error,r.error);return r.value}
+  const nav=async label=>{[...document.querySelectorAll('nav button')].find(b=>b.innerText.trim()===label).click();await wait(150)}
+  const action=async name=>{const b=[...document.querySelectorAll(`[data-action="${name}"]:not(:disabled)`)].find(b=>b.checkVisibility());check(b,'Missing '+name);b.click();await wait(200);await until(()=>!b.isConnected||!b.disabled,name)}
+  const item=(s,id)=>s.captureReport.items.find(r=>r.id===id)
+  await until(()=>window.desktop&&document.querySelector('nav'),'startup')
+  check((await state()).version===f.version,'Version mismatch')
+  await nav('备份账号');await action('analyze')
+  await until(async()=>!!(await state()).captureReport?.life_social,'legacy report')
+  let s=await state();check(item(s,'life_base').state==='collected','Legacy base lost')
+  check(item(s,'life_history').state==='unknown'&&item(s,'social_lists').state==='unknown','Legacy classifications invented')
+  await action('analyze');await until(async()=>item(await state(),'life_history').state==='collected','history classified')
+  s=await state();check(item(s,'social_lists').state==='collected'&&item(s,'life_base').state==='collected','Classified records missing')
+  await nav('查看资料');document.getElementById('record-tab-life').click();await wait(150)
+  check(document.querySelectorAll('[data-career]').length===6,'Profession cards missing')
+  document.getElementById('record-tab-social').click();await wait(150)
+  check(document.body.innerText.includes('好友申请')&&document.body.innerText.includes('黑名单'),'Social class labels missing')
+  await nav('备份账号');await action('capture-export');check((await state()).captureDelivery?.sha256,'Export validation missing')
+  await action('analyze');await until(async()=>(await state()).captureReport.input===f.exportedZip,'reopened export')
+  s=await state();check(item(s,'social_lists').state==='collected'&&item(s,'life_history').state==='collected','Roundtrip lost classification')
+  await nav('查看资料');document.getElementById('record-tab-life').click();await wait(200)
+  check(!document.querySelector('.notice.error'),'UI error');check(document.documentElement.scrollWidth<=innerWidth+2,'Horizontal overflow')
+  window.chrome.webview.postMessage({kind:'test-done',success:true})
+})().catch(e=>window.chrome.webview.postMessage({kind:'test-done',success:false,error:e.stack||e.message}))

@@ -11,9 +11,10 @@
   async function state() { const result = await window.desktop.act('state'); check(!result.error, result.error); return result.value }
   await until(() => window.desktop && document.querySelector('nav'), 'startup')
   check((await state()).version === fixture.version, 'Wrong version')
-  const settings = [...document.querySelectorAll('nav button')].find(button => button.innerText.trim() === '工具设置')
+  const settings = [...document.querySelectorAll('nav button')].find(button => button.innerText.trim() === '设置')
   check(settings, 'Settings navigation missing'); settings.click()
   await until(() => document.querySelector('[data-action="capture-update-check"]'), 'update controls')
+  const options=[...document.querySelectorAll('details')].find(d=>d.querySelector('summary')?.textContent.includes('更新选项'));check(options,'Update options missing');options.open=true
   check(document.body.innerText.includes('自动选择'), 'Default route missing')
   document.querySelector('[data-action="capture-update-check"]').click()
   await until(async () => {
@@ -23,9 +24,9 @@
   }, 'signed backup feed')
   const update = (await state()).captureUpdate
   check(update.source === 'gh-proxy', 'Direct outage did not use backup')
-  check(document.body.innerText.includes('更新线路') && document.body.innerText.includes('备用加速（GH-Proxy）'), 'Route display missing')
+  check(document.body.innerText.includes('当前线路') && document.body.innerText.includes('备用加速（GH-Proxy）'), 'Route display missing')
   check(!document.querySelector('.notice.error'), 'Unexpected UI error')
-  document.querySelector('[data-action="capture-update-check"]').closest('.card').scrollIntoView({block:'start'})
+  options.scrollIntoView({block:'start'})
   await pause(300)
   check(document.documentElement.scrollWidth <= innerWidth + 2, 'Horizontal overflow')
   window.chrome.webview.postMessage({kind:'test-done',success:true})

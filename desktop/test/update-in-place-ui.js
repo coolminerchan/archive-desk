@@ -9,7 +9,7 @@
     await pause(100)
   }
   check((await state()).version===fixture.version,'Original entry opened the wrong version')
-  const settings=[...document.querySelectorAll('nav button')].find(button=>button.innerText.trim()==='工具设置')
+  const settings=[...document.querySelectorAll('nav button')].find(button=>['设置','工具设置'].includes(button.innerText.trim()))
   check(settings,'Settings missing');settings.click();await pause(300)
   if(fixture.version==='0.7.2')check(document.body.innerText.includes('更新并重启'),'In-place update control missing')
   check(!document.querySelector('.notice.error'),'Unexpected application error')

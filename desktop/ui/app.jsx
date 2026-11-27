@@ -5,6 +5,8 @@ import {
   HardDrive, KeyRound, Layers, Library, Play, Radio, ScanLine, Server, ShieldCheck, Square, Swords, X, Settings, ChevronRight, Gamepad2
 } from 'lucide-react'
 import './style.css'
+import './capture-clean.css'
+import { hasRecordView, recordViews } from './capture-workflow.mjs'
 import CapturePage from './capture.jsx'
 import { artwork, roleArt, portraits, ArtHero, ArtLink, ArtHeading } from './artwork.jsx'
 
@@ -12,7 +14,7 @@ const ROLE = new URLSearchParams(location.search).get('role') || 'server'
 const ROLE_INFO = {
   server: { name: '服务端管理', icon: Server, tabs: [['overview', '运行概览', Activity], ['releases', '资源发布', Layers], ['storage', '账号与存档', Archive]] },
   client: { name: '游戏启动器', icon: Box, tabs: [['overview', '连接与启动', Play], ['settings', '客户端设置', FolderOpen]] },
-  capture: { name: '账号采集工具', icon: Radio, tabs: [['overview', '采集与核对', ScanLine], ['progress', '星云树与生活', Library], ['exploration', '水晶与景点', Activity], ['gardens', '装修采集', Library], ['scenes', '本人场景', Layers], ['settings', '工具设置', FolderOpen]] }
+  capture: { name: '账号采集工具', icon: Radio, tabs: [['overview', '备份账号', ScanLine], ['records', '查看资料', Archive], ['gardens', '家园装修', Library], ['settings', '设置', Settings]] }
 }
 
 function Button({ icon: Icon, kind = 'secondary', children, ...props }) {
@@ -249,22 +251,23 @@ function App() {
     </>
   }
 
-  const captureViews = Object.fromEntries(['overview', 'progress', 'gardens', 'scenes', 'exploration', 'settings'].map(key =>
+  const captureViews = Object.fromEntries(['overview', 'gardens', 'settings', ...recordViews.map(([key])=>key)].map(key =>
     [key, <CapturePage key="capture" tab={key} state={state} busy={busy} act={act} onNavigate={setTab} />]))
 
   const panel = { server: serverViews, client: clientViews, capture: captureViews }[ROLE][tab]
+  const activeTab = ROLE==='capture' && hasRecordView(tab) ? 'records' : tab
   return <div className={"desktop role-" + ROLE} style={{ '--ambient-art': `url("${roleArt[ROLE].blur}")` }}>
     <aside>
       <div className="brand"><div className="brand-icon"><img src={portraits[{server:4,client:0,capture:2}[ROLE]]} alt="" /></div><div><b>{settings.name}</b><span>{{server:'服务与数据',client:'游戏连接',capture:'账号备份'}[ROLE]}</span></div></div>
       {ROLE === 'client' && <div className="game-library-label">游戏库<span>01</span></div>}
       <nav aria-label="工具选项">{settings.tabs.map(([key, label, Icon]) =>
-        <button type="button" key={key} onClick={() => setTab(key)} aria-current={tab === key ? 'page' : undefined}>
-          <Icon size={18} /><span>{label}</span>{tab === key && <ArrowRight className="nav-arrow" size={14} />}</button>)}</nav>
+        <button type="button" key={key} onClick={() => setTab(key)} aria-current={activeTab === key ? 'page' : undefined}>
+          <Icon size={18} /><span>{label}</span>{activeTab === key && <ArrowRight className="nav-arrow" size={14} />}</button>)}</nav>
       <div className="sidebar-memory"><img src={roleArt[ROLE].thumb} alt="" /><div><small>每一次相遇，都值得珍藏</small><strong>{roleArt[ROLE].title}</strong><span>OPEN SPACE · MEMORIES</span></div></div>
       <div className="app-credit"><span>版本 {state.version || '0.5.2'}</span><button type="button" onClick={() => setToast({ message: '感谢原作者、水音及社区贡献者的支持。详细版权与许可随程序附带。' })}>致谢</button></div>
     </aside>
     <main>
-      <header><div className="breadcrumb"><span>{settings.name}</span><ChevronRight size={13} /><strong>{settings.tabs.find(([key]) => key === tab)[1]}</strong></div>
+      <header><div className="breadcrumb"><span>{settings.name}</span><ChevronRight size={13} /><strong>{settings.tabs.find(([key]) => key === activeTab)?.[1]}</strong></div>
         <div className={'status ' + (on ? 'on' : '')}><span />{status}</div></header>
       <div className="content">
         {(state.configError || state.serviceError) && <div className="notice error" role="alert">{state.configError || state.serviceError}</div>}

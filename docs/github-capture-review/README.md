@@ -15,6 +15,8 @@ Live capture requires administrator privileges. Existing archives can be inspect
 
 Start capture before signing in through the original client. Open the views you want to preserve and wait for their contents to load. Exit the client or stop capture to finish the archive.
 
+The application has four sections: account backup, saved records, home decoration, and settings. Saved records are grouped by category. Capture diagnostics, manual connection options, and detailed evidence can be expanded when needed.
+
 Account records and visited-scene layouts are saved separately. ZIP, PCAP, and PCAPNG files can also be opened for inspection.
 
 The capture contains data returned during that session. Missing responses remain unknown. Keep the original recording when further inspection may be needed.
