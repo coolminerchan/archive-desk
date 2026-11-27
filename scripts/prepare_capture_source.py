@@ -40,7 +40,7 @@ def prepare(version):
         files[path.relative_to(ROOT).as_posix()] = path.read_bytes()
     for name in ['capture-main.mjs', 'product.mjs', 'platform.mjs', 'native-platform.mjs', 'native-bridge.js',
                  'preload.cjs', 'capture-controller.mjs', 'capture-launcher.mjs', 'capture-session.ps1',
-                 'capture_report.py', 'capture_delivery.py', 'capture_preflight.py', 'capture-errors.mjs', 'capture-update.mjs', 'capture-update-apply.mjs', 'capture-update.json', 'capture_update_package.py', 'capture-version.json', 'equipment_audit.py', 'package.json', 'package-lock.json',
+                 'capture_report.py', 'capture_delivery.py', 'capture_preflight.py', 'capture-errors.mjs', 'capture-update.mjs', 'capture-update-apply.mjs', 'capture-update-install.mjs', 'capture-update.json', 'capture_update_package.py', 'capture-version.json', 'equipment_audit.py', 'package.json', 'package-lock.json',
                  'package.mjs', 'zip_release.py', 'vite.config.mjs', '.gitignore']:
         add('desktop/' + name)
     suffixes = {'.py', '.json', '.md', '.jsx', '.css', '.mjs', '.html', '.png', '.ico', '.cpp', '.ps1'}
@@ -48,7 +48,7 @@ def prepare(version):
         for path in (ROOT / directory).rglob('*'):
             if path.is_file() and path.suffix in suffixes and '__pycache__' not in path.parts:
                 add(path.relative_to(ROOT))
-    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'test_life_social.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'life-social-ui.js', 'update-ui.js', 'one-click-ui.js']:
+    for name in ['test_capture.py', 'test_archive_delivery.py', 'test_capture_update.py', 'test_life_social.py', 'capture-errors.test.mjs', 'capture-update.test.mjs', 'capture-update-install.test.mjs', 'capture-controller.test.mjs', 'one-click.test.mjs', 'product.test.mjs', 'gardens-ui.js', 'scenes-ui.js', 'life-social-ui.js', 'update-ui.js', 'update-in-place-ui.js', 'one-click-ui.js']:
         add('desktop/test/' + name)
     for name in ['docs/capture-one-click.md', 'docs/capture-quick-start.zh-CN.txt', 'docs/capture-life-social-format.md', 'docs/github-capture-review/README.md', f'docs/github-capture-review/RELEASE-{version}.md',
                  'scripts/bootstrap_capture_build.ps1', 'scripts/prepare_capture_source.py', 'scripts/sign_capture_update.mjs']:

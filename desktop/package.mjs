@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { PRODUCTS } from './product.mjs'
+import { createManifest } from './capture-update-install.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const repo = dirname(here)
@@ -23,7 +24,7 @@ const variants = {
   server: { core: ['overfield-server.exe'], app: ['equipment_audit.py', 'capturelib'],
     scripts: ['save_snapshot.py', 'initialize_player.py'], dependencies: ['proto_gen', 'tools/python'] },
   client: { core: ['overfield-client.exe'], app: [], scripts: ['local_client_adapter.py', 'remote_dispatch.py', 'pcgame_adapter.py', 'make_client_junction.ps1'], dependencies: ['tools/python'] },
-  capture: { core: [], app: ['equipment_audit.py', 'capture-controller.mjs', 'capture-launcher.mjs', 'capture-errors.mjs', 'capture-update.mjs', 'capture-update-apply.mjs', 'capture-update.json', 'capture_update_package.py', 'capture_report.py', 'capture_delivery.py', 'capture_preflight.py', 'capture-version.json', 'capturelib', 'capture-session.ps1'],
+  capture: { core: [], app: ['equipment_audit.py', 'capture-controller.mjs', 'capture-launcher.mjs', 'capture-errors.mjs', 'capture-update.mjs', 'capture-update-apply.mjs', 'capture-update-install.mjs', 'capture-update.json', 'capture_update_package.py', 'capture_report.py', 'capture_delivery.py', 'capture_preflight.py', 'capture-version.json', 'capturelib', 'capture-session.ps1'],
     scripts: [], dependencies: ['proto_gen', 'tools/python', 'tools/tshark'] }
 }
 const guides = {
@@ -99,6 +100,7 @@ try {
     if (role === 'client' || role === 'server') await cp(join(repo, 'docs/reconnect-implementation.md'), join(desktop, '连接恢复.md'))
     if (role !== 'capture') await writeFile(join(desktop, '使用说明.md'), `# ${product.name}\n\n版本 ${version} · Windows x64\n\n完整解压本包后，运行根目录的「${product.executable}」。本工具拥有自己的运行环境与配置，不需要安装另外两个工具。请将 runtime、resources 目录与启动程序放在一起。显示界面使用系统网页组件，Windows 11 和多数 Windows 10 已包含。缺少时请安装 Microsoft Edge WebView2 Runtime，官方地址 https://developer.microsoft.com/microsoft-edge/webview2/consumer/ 。\n\n${guides[role]}\n\n设置和日志分别保存在当前用户的 AppData/Roaming/OverField Desktop/${role}。这个目录仅保存本工具的数据。\n\n感谢原作者、水音及社区贡献者。详细许可见同目录文件。\n`, 'utf8')
     await cp(join(nativeTools, 'build', 'DesktopHost.' + role + '.exe'), join(desktop, product.executable))
+    if (role === 'capture') await createManifest(desktop, version)
     const pending = join(temporary, name + '.zip')
     run('python.exe', ['-B', join(here, 'zip_release.py'), desktop, pending])
     const output = join(dist, name + '.zip')

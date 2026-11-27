@@ -51,7 +51,11 @@ Update checks and package downloads try GitHub directly first. If the connection
 
 Connection waits are limited to 12 seconds, stalled transfers to 20 seconds, and each package attempt to 10 minutes. Switching routes restarts the transfer and verifies its full size and digest. No GitHub token, account archive, or game traffic is sent to the proxy. Both routes require the same release signature.
 
-The verified version is installed in a separate directory. Starting it closes the current window first. Keep the previous directory if rollback is needed. Capture and analysis must finish before updating.
+The verified package is staged before installation. Choose “Update and restart” to close the application and replace the program files in its current directory. The same EXE path and existing shortcuts open the updated version. Capture and analysis must finish before updating.
+
+An independent helper waits for both application processes to exit. Replaced program components are kept in a .capture-backup-* directory. Unrelated files at the installation root, settings, and account archives are retained. If replacement fails, the helper restores the previous components. An interrupted transaction is recovered on the next launch.
+
+When an older updater starts this version from its cache, a matching prepared-update record and the original launch directory allow the new version to finish installation at the original location. A normal launch from an unrelated directory does not trigger this migration.
 
 A private repository or an unpublished release may have no anonymously accessible update. The application does not request or embed a GitHub account token.
 

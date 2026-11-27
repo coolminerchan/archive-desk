@@ -103,7 +103,7 @@ function AccountCapturePage({ state, tab, busy, act }) {
       <p className="capture-hint">优先直连 GitHub，连接失败或下载中断时自动尝试备用加速（GH-Proxy）。两条线路使用同一签名和文件校验。</p>
       <div className="actions">{action('capture-update-check', '检查更新', RefreshCw, undefined, locked)}
         {action('capture-update-download', '下载并验证', ArrowDownToLine, undefined, locked || state.captureUpdate?.phase !== 'available')}
-        {action('capture-update-start', '启动新版本', Play, undefined, locked || state.captureUpdate?.phase !== 'ready')}
+        {action('capture-update-start', '更新并重启', Play, undefined, locked || state.captureUpdate?.phase !== 'ready')}
         {action('capture-update-folder', '打开更新目录', FolderOpen)}</div>
       <label className="check-consent"><input type="checkbox" checked={!!state.captureUpdateCheckOnStart} disabled={locked}
         onChange={event => act('capture-update-auto', { enabled: event.target.checked })} /><span>启动时检查新版本</span></label>

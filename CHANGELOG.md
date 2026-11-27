@@ -1,3 +1,9 @@
+# 0.7.2
+
+- Apply verified updates to the existing installation after both application processes close.
+- Keep the original EXE path and shortcuts, with transactional component replacement and automatic rollback on failure.
+- Recover interrupted updates before opening the UI, and finish older updaters' cache handoffs at their original location.
+
 # 0.7.1
 
 - Retry update checks and package downloads through GH-Proxy when the direct connection fails.

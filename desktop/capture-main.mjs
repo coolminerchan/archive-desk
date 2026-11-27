@@ -5,6 +5,7 @@ import { access, mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { CaptureController } from './capture-controller.mjs'
+import { cleanupHelpers, legacyOrigin, startApply } from './capture-update-install.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url)), windows = process.platform === 'win32'
 const metadata = name => JSON.parse(readFileSync(join(here, name), 'utf8'))
@@ -86,6 +87,15 @@ ipcMain.handle('desktop:action', async (event, name, args) => {
 })
 await app.whenReady()
 try { settings = JSON.parse(await readFile(stateFile, 'utf8')) } catch (error) { if (error.code !== 'ENOENT') await capture.failure(error, 'read-settings') }
+const migration = packaged ? await legacyOrigin({ here, userData }) : null
+let movingToOriginal = false
+if (migration) {
+  try {
+    await startApply({ here, userData, ...migration, quit: () => app.quit() })
+    movingToOriginal = true
+  } catch (error) { capture.error = '原目录更新未完成：' + (await capture.failure(error, 'update-original-entry')).message }
+}
+if (!movingToOriginal) {
 mainWindow = new BrowserWindow({ width: 1240, height: 820, minWidth: 960, minHeight: 680,
   backgroundColor: '#0d111a', title: '账号采集工具', webPreferences: {
     preload: join(here, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } })
@@ -106,3 +116,5 @@ app.on('before-quit', event => {
     readyToQuit = true; app.quit()
   })
 })
+setTimeout(() => void cleanupHelpers(userData), 3000).unref()
+}

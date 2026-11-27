@@ -1,7 +1,7 @@
 import { createHash, randomUUID, verify } from 'node:crypto'
-import { spawn } from 'node:child_process'
-import { copyFile, mkdir, open, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
+import { mkdir, open, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { startApply } from './capture-update-install.mjs'
 
 const VERSION = /^\d{1,5}\.\d{1,5}\.\d{1,5}$/
 const SOURCES = [
@@ -179,7 +179,7 @@ export class CaptureUpdater {
       const installed = JSON.parse(await this.ctx.command(this.ctx.python(), args, { persistent: true }).done)
       if (!installed.executable || installed.version !== release.version || installed.path !== target) throw new Error('更新包安装验证失败')
       this.installed = installed
-      this.set({ phase: 'ready', hint: '新版本已验证。启动后请从新版目录运行；旧目录可保留用于回退。' })
+      this.set({ phase: 'ready', hint: '新版本已验证。点击更新后将关闭窗口并替换当前目录的程序，原有入口和快捷方式继续使用。' })
       await writeFile(join(this.root, 'prepared.json'), JSON.stringify({ version: release.version, path: target, sha256: release.sha256 }))
       return true
     } finally {
@@ -190,15 +190,9 @@ export class CaptureUpdater {
   }) }
   async launch() { return this.guarded(async () => {
     if (this.state.phase !== 'ready' || !this.installed || !this.ctx.quit) throw new Error('请先下载并验证新版本')
-    const helper = join(this.root, `launch-${randomUUID()}.mjs`)
-    await copyFile(join(this.ctx.here, 'capture-update-apply.mjs'), helper)
-    await stat(this.installed.executable)
-    const child = spawn(process.execPath, [helper, String(process.pid), String(process.ppid), this.installed.executable, this.root],
-      { detached: true, stdio: 'ignore', windowsHide: true })
-    await new Promise((ok, fail) => { child.once('spawn', ok); child.once('error', fail) })
-    child.unref()
-    this.set({ phase: 'restarting', hint: '正在关闭当前窗口并启动新版本…' })
-    setTimeout(() => this.ctx.quit(), 100)
+    await startApply({ here: this.ctx.here, userData: this.ctx.userData, source: this.installed.path,
+      version: this.installed.version, quit: () => this.ctx.quit() })
+    this.set({ phase: 'restarting', hint: '正在关闭窗口并更新原目录；完成后会自动重新打开。' })
     return true
   }) }
 }
