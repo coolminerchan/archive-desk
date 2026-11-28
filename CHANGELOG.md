@@ -1,3 +1,10 @@
+# 0.7.7
+
+- Accept valid Windows short and long directory paths when preparing and applying updates.
+- Check path components before resolving aliases, reject redirected or overlapping update directories, and keep cleanup within the current transaction.
+- Honor cancellation before and after package extraction. Preserve earlier prepared updates and remove only the current unfinished staging directory when its path remains safe.
+- Validate prepared-update metadata and helper handoffs while retaining package signatures, file checksums, in-place replacement, and rollback.
+
 # 0.7.6
 
 - Display the complete backup process on the home page, including game browsing, saving, and follow-up checks.
