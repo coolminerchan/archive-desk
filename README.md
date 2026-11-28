@@ -1,3 +1,11 @@
+# 游戏可以关服，数据不该失忆
+“游戏要关服了。” 
+
+“嗯，我知道。”  
+
+“那你还在采什么？” 
+
+“采最后一点，大家存在过的证据。”
 # archive-desk
 
 A desktop utility for client-session capture, archive inspection, and scene backups.
