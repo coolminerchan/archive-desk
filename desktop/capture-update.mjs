@@ -1,7 +1,8 @@
 import { createHash, randomUUID, verify } from 'node:crypto'
-import { mkdir, open, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { startApply } from './capture-update-install.mjs'
+import { renameSync } from 'node:fs'
+import { lstat, open, readFile, rename } from 'node:fs/promises'
+import { basename, join, resolve } from 'node:path'
+import { directory, directoryLocation, ensureDirectory, EXECUTABLE, overlap, removeOwned, startApply } from './capture-update-install.mjs'
 
 const VERSION = /^\d{1,5}\.\d{1,5}\.\d{1,5}$/
 const SOURCES = [
@@ -144,16 +145,39 @@ export class CaptureUpdater {
   async prepare() { return this.guarded(async () => {
     if (!this.release?.newer) throw new Error('请先检查可用的新版本')
     const release = this.release
-    await mkdir(this.root, { recursive: true })
-    const file = join(this.root, `capture-${release.version}-${randomUUID()}.zip`), pending = file + '.part'
+    const installation = await directory(resolve(await directory(this.ctx.here), '../..'))
+    const location = await directoryLocation(this.root)
+    if (overlap(installation, location)) throw new Error('Update staging overlaps the installation')
+    const root = await ensureDirectory(location)
+    const file = join(root, `capture-${release.version}-${randomUUID()}.zip`), pending = file + '.part'
+    const id = randomUUID(), stageName = `version-${release.version}-${id}`, target = join(root, stageName)
+    const prepared = join(root, 'prepared.json'), record = join(root, `prepared-${id}.json.part`), signal = this.abort.signal
+    const checkCancelled = () => { if (signal.aborted) throw new Error('更新已取消') }
     this.set({ phase: 'downloading', progress: 0, error: '' })
-    let handle
+    let handle, recordHandle, pendingOwned = false, fileOwned = false, stageOwned = false, recordOwned = false
+    const discardPending = async () => {
+      if (pendingOwned) { await removeOwned(root, pending); pendingOwned = false }
+    }
+    const discardStage = async () => {
+      if (!stageOwned) return
+      if (target !== join(root, stageName) || basename(target) !== `version-${release.version}-${id}`)
+        throw new Error('Invalid unfinished update stage')
+      const entry = await lstat(target).catch(error => { if (error.code !== 'ENOENT') throw error })
+      if (!entry) { stageOwned = false; return }
+      if (!entry.isDirectory() || entry.isSymbolicLink()) throw new Error('Redirected unfinished update stage')
+      await removeOwned(root, target); stageOwned = false
+    }
+    const plainPrepared = async () => {
+      const entry = await lstat(prepared).catch(error => { if (error.code !== 'ENOENT') throw error })
+      if (entry && (!entry.isFile() || entry.isSymbolicLink())) throw new Error('Linked or invalid prepared update record')
+    }
     try {
       let downloaded = false, lastError
       for (const [attempt, source] of this.sources(this.releaseSource).entries()) {
         this.route(source, attempt); this.set({ progress: 0 })
         try {
           handle = await open(pending, 'wx')
+          pendingOwned = true
           const hash = createHash('sha256')
           const found = await request(release.url, source, release.bytes, async (chunk, bytes) => {
             await handle.writeFile(chunk); hash.update(chunk)
@@ -165,27 +189,56 @@ export class CaptureUpdater {
           downloaded = true; break
         } catch (error) {
           await handle?.close().catch(() => {}); handle = null
-          await unlink(pending).catch(() => {})
+          await discardPending()
           if (this.abort.signal.aborted) throw error
           lastError = error
         }
       }
       if (!downloaded) throw lastError
       await rename(pending, file)
+      pendingOwned = false; fileOwned = true
       this.set({ phase: 'verifying' })
-      const target = join(this.root, `version-${release.version}-${randomUUID()}`)
+      checkCancelled()
+      await directory(root)
+      try { await lstat(target); throw new Error('Update stage already exists') }
+      catch (error) { if (error.code !== 'ENOENT') throw error }
+      checkCancelled()
       const args = ['-B', '-X', 'utf8', join(this.ctx.here, 'capture_update_package.py'), '--input', file,
         '--output', target, '--version', release.version, '--sha256', release.sha256]
-      const installed = JSON.parse(await this.ctx.command(this.ctx.python(), args, { persistent: true }).done)
-      if (!installed.executable || installed.version !== release.version || installed.path !== target) throw new Error('更新包安装验证失败')
+      // The generated name was absent before this interpreter invocation. Only it
+      // may be cleaned on failure; never use a returned installed.path for cleanup.
+      stageOwned = true
+      const result = await this.ctx.command(this.ctx.python(), args, { persistent: true }).done
+      checkCancelled()
+      const installed = JSON.parse(result)
+      if (installed.executable !== join(target, EXECUTABLE) || installed.version !== release.version || installed.path !== target)
+        throw new Error('更新包安装验证失败')
+      if (await directory(target) !== target) throw new Error('Update stage path changed')
+      await plainPrepared()
+      checkCancelled()
+      recordHandle = await open(record, 'wx'); recordOwned = true
+      await recordHandle.writeFile(JSON.stringify({ version: release.version, path: target, sha256: release.sha256 }))
+      await recordHandle.sync(); await recordHandle.close(); recordHandle = null
+      await directory(root)
+      if (await directory(target) !== target) throw new Error('Update stage path changed')
+      await plainPrepared()
+      const metadata = await lstat(record)
+      if (!metadata.isFile() || metadata.isSymbolicLink()) throw new Error('Linked prepared update metadata')
+      checkCancelled()
+      // This small atomic commit has no await between the final cancellation
+      // check and publishing ready, so an aborted preparation cannot replace the old record.
+      renameSync(record, prepared)
+      recordOwned = false; stageOwned = false
       this.installed = installed
       this.set({ phase: 'ready', hint: '新版本已验证。点击更新后将关闭窗口并替换当前目录的程序，原有入口和快捷方式继续使用。' })
-      await writeFile(join(this.root, 'prepared.json'), JSON.stringify({ version: release.version, path: target, sha256: release.sha256 }))
       return true
     } finally {
       await handle?.close().catch(() => {})
-      await unlink(pending).catch(() => {})
-      await unlink(file).catch(() => {})
+      await recordHandle?.close().catch(() => {})
+      await discardPending().catch(() => {})
+      if (recordOwned) await removeOwned(root, record).catch(() => {})
+      await discardStage().catch(() => {})
+      if (fileOwned) await removeOwned(root, file).catch(() => {})
     }
   }) }
   async launch() { return this.guarded(async () => {

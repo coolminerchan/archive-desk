@@ -15,7 +15,9 @@ export function inside(root, path) {
   return !!part && !isAbsolute(part) && part !== '..' && !part.startsWith('..' + sep)
 }
 async function readJSON(path) {
-  if ((await stat(path)).size > 4 * 1024 * 1024) throw Error('Update metadata exceeds limit')
+  const entry = await lstat(path)
+  if (!entry.isFile() || entry.isSymbolicLink()) throw Error('Linked or invalid update metadata')
+  if (entry.size > 4 * 1024 * 1024) throw Error('Update metadata exceeds limit')
   return JSON.parse(await readFile(path, 'utf8'))
 }
 export async function digest(path) {
@@ -32,13 +34,50 @@ export async function atomicJSON(path, value) {
   } finally { await rm(pending, { force: true }).catch(() => {}) }
 }
 async function exists(path) { try { await lstat(path); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error } }
-async function directory(path) {
-  const entry = await lstat(path)
-  if (!entry.isDirectory() || entry.isSymbolicLink() || resolve(path).toLowerCase() !== (await realpath(path)).toLowerCase())
-    throw Error('Update directory cannot contain a redirected path')
+function directoryInput(path) {
+  // Reject before resolve(), which would erase a linked component followed by .. .
+  if (typeof path !== 'string' || !path || path.includes('\0') || path.split(/[\\/]/).includes('..'))
+    throw Error('Invalid update directory path')
+  return resolve(path)
+}
+export async function directory(path) {
+  const absolute = directoryInput(path)
+  for (let current = absolute; ; current = dirname(current)) {
+    const entry = await lstat(current)
+    if (!entry.isDirectory() || entry.isSymbolicLink()) throw Error('Update directory cannot contain a redirected path')
+    if (dirname(current) === current) break
+  }
+  // Expand legitimate Windows 8.3 names only after checking the original ancestry.
+  return realpath(absolute)
+}
+export async function directoryLocation(path) {
+  let parent = directoryInput(path)
+  const missing = []
+  while (!await exists(parent)) {
+    const next = dirname(parent)
+    if (next === parent) throw Error('Update directory has no existing parent')
+    missing.unshift(basename(parent)); parent = next
+  }
+  return join(await directory(parent), ...missing)
+}
+export async function ensureDirectory(path) {
+  let parent = await directoryLocation(path)
+  const missing = []
+  while (!await exists(parent)) { missing.unshift(basename(parent)); parent = dirname(parent) }
+  parent = await directory(parent)
+  for (const name of missing) {
+    const child = join(parent, name)
+    try { await mkdir(child) } catch (error) { if (error.code !== 'EEXIST') throw error }
+    parent = await directory(child)
+  }
+  return parent
+}
+export function overlap(a, b) {
+  return resolve(a).toLowerCase() === resolve(b).toLowerCase() || inside(a, b) || inside(b, a)
 }
 export async function product(root) {
   await directory(root)
+  await directory(join(root, 'resources/app'))
   const info = await readJSON(join(root, 'resources/app/product.json'))
   if (info.role !== 'capture' || !VERSION.test(info.version)) throw Error('Update destination is not a collector installation')
   const trust = await readJSON(join(root, 'resources/app/capture-update.json'))
@@ -107,23 +146,30 @@ async function retryRename(from, to) {
     }
   }
 }
-async function removeOwned(root, path) {
-  if (!inside(root, path) || (await lstat(path)).isSymbolicLink()) throw Error('Invalid update cleanup path')
+export async function removeOwned(root, path) {
+  const absolute = directoryInput(path), parent = await directory(dirname(absolute)), owner = await directory(root)
+  if (parent.toLowerCase() !== owner.toLowerCase() || !inside(owner, join(parent, basename(absolute))) ||
+      (await lstat(absolute)).isSymbolicLink()) throw Error('Invalid update cleanup path')
+  if ((await lstat(absolute)).isDirectory()) await directory(absolute)
   await rm(path, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
 }
-export async function validatePlan(plan) {
+export async function validatePlan(plan, { requireSource = false } = {}) {
   if (plan.schema !== 1 || plan.kind !== 'capture_update' || !VERSION.test(plan.version) || !VERSION.test(plan.previousVersion) ||
       !/^[a-f0-9]{32}$/.test(plan.id) || ![plan.target, plan.source, plan.helper].every(path => typeof path === 'string' && isAbsolute(path)))
     throw Error('Invalid update plan')
-  if (inside(plan.target, plan.source) || inside(plan.source, plan.target) || resolve(plan.target) === resolve(plan.source) ||
-      inside(plan.target, plan.helper) || inside(plan.source, plan.helper)) throw Error('Update directories overlap')
-  await directory(plan.target); await directory(plan.helper)
+  const target = await directory(plan.target), helper = await directory(plan.helper)
+  // Recovery may outlive its downloaded package; it never reads files from source.
+  const source = requireSource ? await directory(plan.source) : await directoryLocation(plan.source)
+  if (overlap(target, source) || overlap(target, helper) || overlap(source, helper)) throw Error('Update directories overlap')
   if (plan.incoming !== join(plan.target, '.capture-incoming-' + plan.id) || plan.backup !== join(plan.target, '.capture-backup-' + plan.id))
     throw Error('Invalid update transaction paths')
-  for (const path of [plan.incoming, plan.backup]) if (await exists(path)) await directory(path)
+  for (const path of [plan.incoming, plan.backup]) {
+    if (await directoryLocation(path) !== join(target, basename(path))) throw Error('Invalid update transaction paths')
+  }
 }
 export async function makePlan(target, source, helper, version, pids = []) {
-  target = await realpath(target); source = await realpath(source); helper = await realpath(helper)
+  target = await directory(target); source = await directory(source); helper = await directory(helper)
+  if (overlap(target, source) || overlap(target, helper) || overlap(source, helper)) throw Error('Update directories overlap')
   await requireIdleInstallation(target)
   const before = await product(target), after = await verifyPackage(source, version)
   if (!sameTrust(before.trust, after.trust)) throw Error('Update publisher does not match this installation')
@@ -134,7 +180,7 @@ export async function makePlan(target, source, helper, version, pids = []) {
   const id = randomUUID().replaceAll('-', '')
   const plan = { schema: 1, kind: 'capture_update', id, target, source, helper, version, previousVersion: before.version, pids,
     incoming: join(target, '.capture-incoming-' + id), backup: join(target, '.capture-backup-' + id) }
-  await validatePlan(plan)
+  await validatePlan(plan, { requireSource: true })
   return plan
 }
 export async function rollback(plan) {
@@ -145,6 +191,7 @@ export async function rollback(plan) {
     if (!ROOTS.has(operation.name)) throw Error('Invalid rollback member')
     const target = join(plan.target, operation.name), backup = join(plan.backup, operation.name)
     if (await exists(backup)) {
+      if ((await lstat(backup)).isSymbolicLink()) throw Error('Invalid linked rollback component')
       if (operation.name !== EXECUTABLE && await exists(target)) await removeOwned(plan.target, target)
       await retryRename(backup, target)
     } else if (!operation.existed && await exists(target)) await removeOwned(plan.target, target)
@@ -172,12 +219,12 @@ async function lockInstallation(plan) {
   }
 }
 export async function apply(plan, options = {}) {
-  await validatePlan(plan)
+  await validatePlan(plan, { requireSource: true })
   const release = await lockInstallation(plan)
   try { return await applyLocked(plan, options) } finally { await release() }
 }
 async function applyLocked(plan, { beforeReplace } = {}) {
-  await validatePlan(plan)
+  await validatePlan(plan, { requireSource: true })
   await requireIdleInstallation(plan.target)
   const before = await product(plan.target), after = await verifyPackage(plan.source, plan.version)
   if (before.version !== plan.previousVersion || !sameTrust(before.trust, after.trust)) throw Error('Installation changed since update preparation')
@@ -224,8 +271,14 @@ async function verifyInstalled(root, version, manifest) {
     if (await digest(join(root, row.path)) !== row.sha256) throw Error('Installed file verification failed')
 }
 export async function startApply({ here, userData, source, version, target = resolve(here, '../..'), quit, pids = [process.pid, process.ppid] }) {
-  const helper = join(userData, 'updates', 'apply-' + randomUUID().replaceAll('-', ''))
-  await mkdir(helper, { recursive: true })
+  await directory(here)
+  target = await directory(target); source = await directory(source)
+  const updates = await directoryLocation(join(userData, 'updates'))
+  const helper = join(updates, 'apply-' + randomUUID().replaceAll('-', ''))
+  if (overlap(target, source) || overlap(target, helper) || overlap(source, helper)) throw Error('Update directories overlap')
+  await ensureDirectory(updates)
+  // A failed mkdir must not make an existing directory eligible for cleanup.
+  await mkdir(helper)
   try {
     const plan = await makePlan(target, source, helper, version, pids)
     await copyFile(process.execPath, join(helper, 'node.exe'))
@@ -236,22 +289,24 @@ export async function startApply({ here, userData, source, version, target = res
     await new Promise((ok, fail) => { child.once('spawn', ok); child.once('error', fail) }); child.unref()
     setTimeout(quit, 100)
     return plan
-  } catch (error) { await removeOwned(join(userData, 'updates'), helper).catch(() => {}); throw error }
+  } catch (error) { await removeOwned(updates, helper).catch(() => {}); throw error }
 }
 export async function legacyOrigin({ here, userData, origin = process.env.OVERFIELD_CAPTURE_LAUNCH_CWD }) {
   if (!origin || !isAbsolute(origin)) return null
-  const source = resolve(here, '../..'), updates = resolve(userData, 'updates')
-  if (dirname(source).toLowerCase() !== updates.toLowerCase() || !/^version-\d+\.\d+\.\d+-[a-f0-9-]+$/.test(basename(source)) || resolve(origin).toLowerCase() === source.toLowerCase()) return null
   try {
+    const source = await directory(resolve(await directory(here), '../..')), updates = await directory(join(userData, 'updates'))
+    const target = await directory(origin)
+    if (dirname(source).toLowerCase() !== updates.toLowerCase() || !/^version-\d+\.\d+\.\d+-[a-f0-9-]+$/.test(basename(source)) || overlap(target, source)) return null
     const prepared = await readJSON(join(updates, 'prepared.json'))
-    if (resolve(prepared.path).toLowerCase() !== source.toLowerCase() || !VERSION.test(prepared.version)) return null
+    if ((await directory(prepared.path)).toLowerCase() !== source.toLowerCase() || !VERSION.test(prepared.version)) return null
     const before = await product(origin), after = await product(source)
     if (prepared.version !== after.version || !sameTrust(before.trust, after.trust) || before.version === after.version) return null
-    return { target: await realpath(origin), source, version: after.version }
+    return { target, source, version: after.version }
   } catch { return null }
 }
 export async function cleanupHelpers(userData) {
-  const root = join(userData, 'updates')
+  let root
+  try { root = await directory(join(userData, 'updates')) } catch { return }
   for (const name of await readdir(root).catch(() => [])) {
     if (!/^apply-[a-f0-9]{32}$/.test(name)) continue
     const path = join(root, name)
